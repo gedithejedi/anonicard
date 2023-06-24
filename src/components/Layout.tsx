@@ -12,9 +12,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   if (!isMounted) return null
   return isConnected ? (
     <>
-      <div className="w-full px-3 pt-2 pb-3 flex justify-between items-center border-b-2 border-black	">
+      <div className="w-full px-3 pt-2 pb-3 flex justify-between items-center border-b-2 border-black">
         <Link className="font-bold hover:text-gray-700" href="/">
-          Anonicard
+          ANONICARD
         </Link>
         <ConnectButton />
       </div>

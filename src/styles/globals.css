@@ -24,3 +24,11 @@ textarea:focus + label {
 label:focus-within {
   @apply font-bold;
 }
+
+th {
+  @apply flex pr-2;
+}
+
+/* tr + tr {
+  @apply border-b-2;
+} */
