@@ -1,4 +1,8 @@
 .Box {
-  @apply border-2 border-black px-3 flex flex-col gap-3 py-5 w-full;
+  @apply border-2 border-black px-3 flex flex-col gap-3 py-5 w-full max-w-[500px];
   box-shadow: -4px 4px black;
+}
+
+.Title {
+  @apply text-xl font-bold mb-2;
 }

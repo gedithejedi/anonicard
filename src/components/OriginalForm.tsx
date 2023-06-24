@@ -7,6 +7,7 @@ import {
   SubmitHandler,
   FieldError,
 } from 'react-hook-form'
+import { useRouter } from 'next/navigation'
 
 import {
   useContractRead,
@@ -55,7 +56,9 @@ const Input = ({ disabled = false, value = "", label, register, required = false
       {label}
       <input {...register(label, { required })} value={value} placeholder={value} disabled={disabled} />
     </label>
-    {error && <span className="SubText">This field is required</span>}
+    {error && (
+      <span className="SubText text-red-500">This field is required</span>
+    )}
   </>
 )
 
@@ -66,6 +69,7 @@ const OriginalForm: React.FC = () => {
     reset,
     formState: { errors },
   } = useForm<IFormValues>()
+  const router = useRouter()
 
   const [uri, setUri] = useState<string | undefined>();
   const [defaultImage, setDefaultImage] = useState<File>();
@@ -95,7 +99,7 @@ const OriginalForm: React.FC = () => {
 
   const { refetch } = useContractRead({
     address: nftConfig.originalAnoni.address as `0x${string}`,
-    abi: OriginalAnoni,
+    abi: OriginalAnoni.abi,
     functionName: 'totalSupply',
   })
 
@@ -105,7 +109,7 @@ const OriginalForm: React.FC = () => {
     isError: isPrepareError,
   } = usePrepareContractWrite({
     address: nftConfig.originalAnoni.address as `0x${string}`,
-    abi: OriginalAnoni,
+    abi: OriginalAnoni.abi,
     functionName: 'mint',
     args: [uri],
     chainId: goerli.id,
@@ -180,7 +184,7 @@ const OriginalForm: React.FC = () => {
   }, [uri, write, data])
 
   useEffect(() => {
-    reset()
+    router.push('/')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccess])
 
@@ -209,6 +213,9 @@ const OriginalForm: React.FC = () => {
             accept="image/png, image/jpeg, image/jpg"
             {...register('Profile Image', { required: true })}
           />
+          {errors['Profile Image'] && (
+            <span className="SubText text-red-500">This field is required</span>
+          )}
         </label>
         <Input
           label="Full Name"
@@ -251,10 +258,7 @@ const OriginalForm: React.FC = () => {
         <Input label="Job" register={register} error={errors['Job']} required />
         <label className="flex flex-col Label">
           Introduction
-          <textarea
-            cols={4}
-            {...register('Introduction', { required: true })}
-          />
+          <textarea cols={4} {...register('Introduction')} />
         </label>
         <Button type="submit">submit</Button>
       </div>
