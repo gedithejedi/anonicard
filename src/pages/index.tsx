@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
 import dynamic from 'next/dynamic'
-import { useRouter } from 'next/navigation'
 import { useDisclosure } from '@chakra-ui/react'
 
 import alchemy from '~/alchemy'
@@ -36,7 +35,6 @@ if (!WORLDCOIN_ID) {
 export default function Home() {
   const { address } = useAccount()
   const [error, setError] = useState<string | undefined>()
-  const router = useRouter()
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const {
@@ -50,6 +48,7 @@ export default function Home() {
   }, [])
 
   // TODO: return error when user login with not orb id
+  //TODO: add back timeout
   const handleProof = useCallback((result: ISuccessResult) => {
     return new Promise<void>((resolve, reject) => {
       if (result.credential_type !== 'orb') {
@@ -74,7 +73,9 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-4">
       <Modal isOpen={isOpen} onClose={onClose}>
-        <OriginalForm onSuccess={onClose} />
+        <div className="py-5">
+          <OriginalForm onSuccess={onClose} />
+        </div>
       </Modal>
       <Box classes="bg-beige" title="My Anoni">
         {isLoadingNFTs ? (

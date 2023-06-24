@@ -8,6 +8,12 @@ import {
   ModalBody,
   ModalCloseButton,
 } from '@chakra-ui/react'
+import { Roboto_Mono } from 'next/font/google'
+
+const robotoMono = Roboto_Mono({
+  weight: ['200', '300', '400', '500', '600', '700'],
+  subsets: ['latin'],
+})
 
 interface Props {
   children?: React.ReactNode
@@ -28,7 +34,12 @@ const BaseModal: React.FC<Props> = ({
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent borderRadius="0" border="2px" borderColor="black">
+        <ModalContent
+          borderRadius="0"
+          border="2px"
+          borderColor="black"
+          className={[robotoMono.className, 'w-full'].join(' ')}
+        >
           <ModalHeader>{title}</ModalHeader>
           <ModalCloseButton />
           <ModalBody className="py-2">{children}</ModalBody>
