@@ -236,7 +236,7 @@ const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
             <label className="flex flex-col">
               Discord Handle
               <input
-                disable={true}
+                disabled={true}
                 value={discordName}
                 {...(register('Discord Handle'), { required: true })}
               />
@@ -281,7 +281,7 @@ const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
             </a>
           </>
         )}
-        {!discordName && error['Discord Handle'] && (
+        {!discordName && errors['Discord Handle'] && (
           <span className="SubText text-red-500">This field is required</span>
         )}
         <Input label="Job" register={register} error={errors['Job']} required />
