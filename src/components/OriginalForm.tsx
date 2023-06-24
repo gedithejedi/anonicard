@@ -26,8 +26,10 @@ type InputProps = {
 
 const Input = ({ label, register, required = false, error }: InputProps) => (
   <>
-    <label>{label}</label>
-    <input {...register(label, { required })} />
+    <label className="flex flex-col">
+      {label}
+      <input {...register(label, { required })} />
+    </label>
     {error && <span className="SubText">This field is required</span>}
   </>
 )
@@ -45,12 +47,14 @@ const OriginalForm: React.FC = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex flex-col gap-y-2">
-        <label className="font-bold">Profile Image</label>
-        <input
-          type="file"
-          accept="image/png, image/jpeg, image/jpg"
-          {...register('Profile Image', { required: true })}
-        />
+        <label className="flex flex-col">
+          Profile Image
+          <input
+            type="file"
+            accept="image/png, image/jpeg, image/jpg"
+            {...register('Profile Image', { required: true })}
+          />
+        </label>
         <Input
           label="Full Name"
           register={register}
@@ -64,8 +68,13 @@ const OriginalForm: React.FC = () => {
           required
         />
         <Input label="Job" register={register} error={errors['Job']} required />
-        <label className="font-bold">Introduction</label>
-        <textarea cols={4} {...register('Introduction', { required: true })} />
+        <label className="flex flex-col Label">
+          Introduction
+          <textarea
+            cols={4}
+            {...register('Introduction', { required: true })}
+          />
+        </label>
         <Button type="submit">submit</Button>
       </div>
     </form>

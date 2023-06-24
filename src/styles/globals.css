@@ -16,3 +16,11 @@ input:focus-visible,
 textarea:focus-visible {
   outline: none;
 }
+
+textarea:focus + label {
+  @apply font-bold;
+}
+
+label:focus-within {
+  @apply font-bold;
+}
