@@ -1,4 +1,4 @@
 .Box {
-  @apply border-2 px-3 border-black flex flex-col gap-3 py-5 w-full;
+  @apply border-2 px-3 flex flex-col gap-3 py-5 w-full;
   box-shadow: -4px 4px black;
 }

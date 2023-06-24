@@ -192,6 +192,7 @@ const OriginalForm: React.FC = () => {
           Profile Image
           <input
             type="file"
+            className="bg-white"
             accept="image/png, image/jpeg, image/jpg"
             {...register('Profile Image', { required: true })}
           />
