@@ -3,8 +3,10 @@ import OriginalForm from '~/components/OriginalForm'
 
 export default function CreateAnony() {
   return (
-    <Box classes="bg-beige">
-      <OriginalForm />
-    </Box>
+    <main className="flex justify-center">
+      <Box classes="bg-beige">
+        <OriginalForm />
+      </Box>
+    </main>
   )
 }

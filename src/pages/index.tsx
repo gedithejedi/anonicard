@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import dynamic from 'next/dynamic'
+import { useRouter } from 'next/navigation'
 
 import alchemy from '~/alchemy'
 import { useAccount } from 'wagmi'
@@ -29,6 +30,8 @@ const WORLDCOIN_ID = process.env.NEXT_PUBLIC_WORLDCOIN_ID
 
 export default function Home() {
   const { address } = useAccount()
+  const [error, setError] = useState<string | undefined>()
+  const router = useRouter()
 
   const {
     nfts: originalNFTs,
@@ -40,6 +43,7 @@ export default function Home() {
     getUserOwnedNfts()
   }, [])
 
+  // TODO: return error when user login with not orb id
   const handleProof = useCallback((result: ISuccessResult) => {
     return new Promise<void>((resolve) => {
       setTimeout(() => resolve(), 3000)
@@ -47,7 +51,12 @@ export default function Home() {
   }, [])
 
   const onSuccess = (result: ISuccessResult) => {
-    console.log(result)
+    if (result.credential_type !== 'orb') {
+      setError('Unique human should be verified with Orb!')
+    } else {
+      setError(undefined)
+      router.push('/create/original-anony')
+    }
   }
 
   return (
@@ -81,14 +90,17 @@ export default function Home() {
             </table>
           </>
         ) : (
-          <IDKitWidget
-            action="verifyhuman"
-            onSuccess={(result) => console.log(result)}
-            handleVerify={handleProof}
-            app_id={WORLDCOIN_ID} // obtain this from developer.worldcoin.org
-          >
-            {({ open }) => <Button onClick={open}>Click me</Button>}
-          </IDKitWidget>
+          <>
+            {error && <span>{error}</span>}
+            <IDKitWidget
+              action="verifyhuman"
+              onSuccess={onSuccess}
+              handleVerify={handleProof}
+              app_id={WORLDCOIN_ID} // obtain this from developer.worldcoin.org
+            >
+              {({ open }) => <Button onClick={open}>Click me</Button>}
+            </IDKitWidget>
+          </>
         )}
       </Box>
     </main>

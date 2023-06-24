@@ -7,6 +7,7 @@ import {
   SubmitHandler,
   FieldError,
 } from 'react-hook-form'
+import { useRouter } from 'next/navigation'
 
 import {
   useContractRead,
@@ -66,6 +67,7 @@ const OriginalForm: React.FC = () => {
     reset,
     formState: { errors },
   } = useForm()
+  const router = useRouter()
 
   const [uri, setUri] = useState<string | undefined>()
   const [defaultImage, setDefaultImage] = useState<File>()
@@ -94,7 +96,7 @@ const OriginalForm: React.FC = () => {
 
   const { refetch } = useContractRead({
     address: nftConfig.originalAnoni.address as `0x${string}`,
-    abi: OriginalAnoni,
+    abi: OriginalAnoni.abi,
     functionName: 'totalSupply',
   })
 
@@ -104,7 +106,7 @@ const OriginalForm: React.FC = () => {
     isError: isPrepareError,
   } = usePrepareContractWrite({
     address: nftConfig.originalAnoni.address as `0x${string}`,
-    abi: OriginalAnoni,
+    abi: OriginalAnoni.abi,
     functionName: 'mint',
     args: [uri],
     chainId: goerli.id,
@@ -179,7 +181,7 @@ const OriginalForm: React.FC = () => {
   }, [uri, write, data])
 
   useEffect(() => {
-    reset()
+    router.push('/')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccess])
 
