@@ -1,9 +1,10 @@
+import React from "react";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 import axios from "axios";
 import Loader from "~/components/Common/Loader";
 
-const verifyDiscord = () => {
+export default function VerifyDiscord() {
   const router = useRouter();
 
   const fetchDiscordData = async (tokenType: string, accessToken: string) => {
@@ -38,12 +39,10 @@ const verifyDiscord = () => {
       fetchDiscordData(accessToken, tokenType)
 
       return true;
-    }, [router.asPath]
+    }, []
   );
 
   return (
     <Loader />
   )
 }
-
-export default verifyDiscord
