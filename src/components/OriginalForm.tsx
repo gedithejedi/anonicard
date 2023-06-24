@@ -281,7 +281,7 @@ const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
             </a>
           </>
         )}
-        {!discordName && errors['Discord Handle'] && (
+        {errors['Discord Handle'] && (
           <span className="SubText text-red-500">This field is required</span>
         )}
         <Input label="Job" register={register} error={errors['Job']} required />
