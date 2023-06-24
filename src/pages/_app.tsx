@@ -4,9 +4,10 @@ import '@rainbow-me/rainbowkit/styles.css'
 import {
   getDefaultWallets,
   midnightTheme,
+  lightTheme,
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit'
-import { configureChains, createConfig, WagmiConfig } from 'wagmi'
+import { configureChains, createConfig, WagmiConfig, useAccount } from 'wagmi'
 import { gnosisChiado } from '@wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
@@ -19,36 +20,17 @@ import type { AppProps } from 'next/app'
 import Layout from '~/components/Layout'
 import CustomAvatar from '~/components/CustomAvatar'
 
-/* adding gnosis network */
-const GnosisChain = {
-  id: 100,
-  name: 'Gnosis Chain',
-  network: 'Gnosis',
-  nativeCurrency: {
-    decimals: 18,
-    name: 'xDai',
-    symbol: 'xDai',
-  },
-  rpcUrls: {
-    default: 'https://rpc.ankr.com/gnosis',
-  },
-  blockExplorers: {
-    default: { name: 'Gnosis Scan', url: 'https://gnosisscan.io/' },
-  },
-  iconUrls: [
-    'https://images.prismic.io/koinly-marketing/16d1deb7-e71f-48a5-9ee7-83eb0f7038e4_Gnosis+Chain+Logo.png',
-  ],
-  testnet: true,
-}
-
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [gnosisChiado],
-  [publicProvider()]
+  [
+    publicProvider(),
+    // jsonRpcProvider({ rpc: () => ({ http: 'https://rpc.ankr.com/gnosis' }) }), //<<<< New RPC Provider
+  ]
 )
 
 const { connectors } = getDefaultWallets({
   appName: 'Anonicard',
-  projectId: 'YOUR_PROJECT_ID',
+  projectId: process.env.NEXT_PUBLIC_WALLET_ID,
   chains,
 })
 
@@ -69,16 +51,25 @@ const robotoMono = Roboto_Mono({
 })
 
 export default function App({ Component, pageProps }: AppProps) {
+  const { isConnected } = useAccount()
+
+  const rainbowkitTheme = isConnected
+    ? midnightTheme({
+        accentColor: '#000',
+        accentColorForeground: 'white',
+        borderRadius: 'small',
+        overlayBlur: 'small',
+      })
+    : lightTheme({
+        accentColor: '#fff',
+        accentColorForeground: 'black',
+      })
+
   return (
     <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider
         avatar={CustomAvatar}
-        theme={midnightTheme({
-          accentColor: '#000',
-          accentColorForeground: 'white',
-          borderRadius: 'small',
-          overlayBlur: 'small',
-        })}
+        theme={rainbowkitTheme}
         appInfo={appInformation}
         chains={chains}
       >
