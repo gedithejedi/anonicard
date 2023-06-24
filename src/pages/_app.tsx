@@ -19,28 +19,6 @@ import type { AppProps } from 'next/app'
 import Layout from '~/components/Layout'
 import CustomAvatar from '~/components/CustomAvatar'
 
-/* adding gnosis network */
-const GnosisChain = {
-  id: 100,
-  name: 'Gnosis Chain',
-  network: 'Gnosis',
-  nativeCurrency: {
-    decimals: 18,
-    name: 'xDai',
-    symbol: 'xDai',
-  },
-  rpcUrls: {
-    default: 'https://rpc.ankr.com/gnosis',
-  },
-  blockExplorers: {
-    default: { name: 'Gnosis Scan', url: 'https://gnosisscan.io/' },
-  },
-  iconUrls: [
-    'https://images.prismic.io/koinly-marketing/16d1deb7-e71f-48a5-9ee7-83eb0f7038e4_Gnosis+Chain+Logo.png',
-  ],
-  testnet: true,
-}
-
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [gnosisChiado],
   [publicProvider()]
@@ -48,7 +26,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
 
 const { connectors } = getDefaultWallets({
   appName: 'Anonicard',
-  projectId: 'YOUR_PROJECT_ID',
+  projectId: process.env.NEXT_PUBLIC_WALLET_ID,
   chains,
 })
 
