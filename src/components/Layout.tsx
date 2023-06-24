@@ -25,7 +25,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <p className="font-bold text-3xl">
         Please Connect your wallet to use the app
       </p>
-      <ConnectButton className="text-3xl" />
+      <ConnectButton />
     </main>
   )
 }
