@@ -66,7 +66,7 @@ const OriginalForm: React.FC = () => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm()
+  } = useForm<IFormValues>()
   const router = useRouter()
 
   const [uri, setUri] = useState<string | undefined>()
