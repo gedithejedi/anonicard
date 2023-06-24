@@ -13,6 +13,7 @@ const discord = () => {
 
     setDiscordName(localStorageName);
   })
+  //TODO: implement urls for both local and deployed on vercel versions
 
   return (
     <>
