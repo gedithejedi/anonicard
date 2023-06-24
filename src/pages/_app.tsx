@@ -13,15 +13,17 @@ import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 
-import { mainnet } from 'wagmi/chains'
+import { goerli } from 'wagmi/chains'
 
 import { Roboto_Mono } from 'next/font/google'
 import type { AppProps } from 'next/app'
 import Layout from '~/components/Layout'
 import CustomAvatar from '~/components/CustomAvatar'
 
+// TODO: change goerli to gnosis or gnosisChiado
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [gnosisChiado],
+  [goerli],
+  // [gnosisChiado],
   [
     publicProvider(),
     // jsonRpcProvider({ rpc: () => ({ http: 'https://rpc.ankr.com/gnosis' }) }), //<<<< New RPC Provider
