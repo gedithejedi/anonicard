@@ -25,4 +25,6 @@ contract AnoniCard is ERC721URIStorage {
     function totalSupply() public view returns (uint256) {
         return _tokenIds.current();
     }
+
+    // TODO: create update function - only updates custom fields
 }
