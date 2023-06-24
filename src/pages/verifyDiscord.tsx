@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 import { useDiscordAccountStore } from "~/store/discord";
+import Loader from "~/components/Common/Loader";
 
 const verifyDiscord = () => {
   const router = useRouter();
@@ -15,7 +16,7 @@ const verifyDiscord = () => {
       window.dispatchEvent(new Event("storage"));
       setTimeout(() => {
         close();
-      }, 3000);
+      }, 2000);
     }, [discordName]
   );
 
@@ -33,7 +34,7 @@ const verifyDiscord = () => {
   );
 
   return (
-    <div>verifyDiscord</div>
+    <Loader />
   )
 }
 
