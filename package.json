@@ -37,7 +37,7 @@
     "wagmi": "^1.0.5"
   },
   "devDependencies": {
-    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "@nomicfoundation/hardhat-toolbox": "^2.0.2",
     "@openzeppelin/contracts": "^4.9.2",
     "@typescript-eslint/eslint-plugin": "^5.60.0",
     "eslint-config-prettier": "^8.8.0",
