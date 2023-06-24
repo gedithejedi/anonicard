@@ -22,7 +22,10 @@ import CustomAvatar from '~/components/CustomAvatar'
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [gnosisChiado],
-  [publicProvider()]
+  [
+    publicProvider(),
+    // jsonRpcProvider({ rpc: () => ({ http: 'https://rpc.ankr.com/gnosis' }) }), //<<<< New RPC Provider
+  ]
 )
 
 const { connectors } = getDefaultWallets({

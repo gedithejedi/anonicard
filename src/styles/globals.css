@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+input,
+textarea {
+  @apply border-2 p-1;
+}
+
+input:focus,
+textarea:focus {
+  @apply border-black;
+}
+
+input:focus-visible,
+textarea:focus-visible {
+  outline: none;
+}

@@ -2,10 +2,14 @@ import { ConnectButton } from '@rainbow-me/rainbowkit'
 import Link from 'next/link'
 import { useAccount } from 'wagmi'
 
+import { useIsMounted } from '~/hooks/useIsMounted'
 import Button from '~/components/Common/Button'
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const { isConnected } = useAccount()
+  const isMounted = useIsMounted()
+
+  if (!isMounted) return null
   return isConnected ? (
     <>
       <div className="w-full px-3 pt-2 pb-3 flex justify-between items-center border-b-2 border-black	">
