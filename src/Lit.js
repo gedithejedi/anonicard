@@ -2,7 +2,7 @@ import * as LitJsSdk from '@lit-protocol/lit-node-client'
 import nftConfig from '~/nftConfig.json'
 
 const client = new LitJsSdk.LitNodeClient()
-const chain = 'xdai'
+const chain = 'polygon'
 
 // Checks if the user owns the token
 const accessControlConditions = (contractName, tokenId) => [
