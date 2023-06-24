@@ -6,10 +6,10 @@ module.exports = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
-    colors: {
-      beige: '#fff8e7',
-      black: '#000',
-      white: '#fff',
+    extend: {
+      colors: {
+        beige: '#fff8e7',
+      },
     },
   },
   plugins: [],
