@@ -4,7 +4,7 @@ import { useDisclosure } from '@chakra-ui/react'
 
 import alchemy from '~/alchemy'
 import { useAccount } from 'wagmi'
-import { IDKitWidget } from '@worldcoin/idkit'
+import { CredentialType, IDKitWidget } from '@worldcoin/idkit'
 import type { ISuccessResult } from '@worldcoin/idkit'
 
 import Box from '~/components/Common/Box'
@@ -47,18 +47,35 @@ export default function Home() {
     getUserOwnedNfts()
   }, [])
 
-  // TODO: return error when user login with not orb id
-  //TODO: add back timeout
-  const handleProof = useCallback((result: ISuccessResult) => {
-    return new Promise<void>((resolve, reject) => {
-      if (result.credential_type !== 'orb') {
-        setError('Unique human should be verified with Orb!')
-        reject('Unique human should be verified with Orb!')
-      }
+  const handleProof = async (result: ISuccessResult) => {
+    const reqBody = {
+      merkle_root: result.merkle_root,
+      nullifier_hash: result.nullifier_hash,
+      proof: result.proof,
+      credential_type: result.credential_type,
+      action: process.env.NEXT_PUBLIC_WLD_ACTION_NAME,
+      signal: '',
+    }
 
-      resolve()
+    return fetch('/api/verify', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(reqBody),
+    }).then(async (res: Response) => {
+      return new Promise<void>((resolve, reject) => {
+        if (res.status !== 200) {
+          setError('Error happend! Maybe you are not verified with Orb?')
+          reject('Verification failed')
+          console.error('Verification failed')
+        }
+
+        console.log('Successfully verified credential.')
+        resolve()
+      })
     })
-  }, [])
+  }
 
   const onSuccess = (result: ISuccessResult) => {
     setError(undefined)
@@ -108,8 +125,8 @@ export default function Home() {
         ) : (
           <>
             <p className="mb-10">
-              You do not own an Anoni yet! Please verify that you are a human and
-              create your first Anoni Card!
+              You do not own an Anoni yet! Please verify that you are a human
+              and create your first Anoni Card!
             </p>
 
             {error && (
@@ -119,10 +136,11 @@ export default function Home() {
             )}
             {WORLDCOIN_ID && (
               <IDKitWidget
-                action="verifyhuman"
+                action={process.env.NEXT_PUBLIC_WLD_ACTION_NAME!}
                 onSuccess={onSuccess}
                 handleVerify={handleProof}
                 app_id={WORLDCOIN_ID}
+                credential_types={[CredentialType.Orb]}
               >
                 {({ open }) => (
                   <Button type="button" onClick={open}>

@@ -8,12 +8,10 @@ import {
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit'
 import { configureChains, createConfig, WagmiConfig, useAccount } from 'wagmi'
-import { gnosis } from '@wagmi/chains'
+import { polygon } from '@wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
-
-import { goerli } from 'wagmi/chains'
 
 import { Roboto_Mono } from 'next/font/google'
 import type { AppProps } from 'next/app'
@@ -21,11 +19,8 @@ import Layout from '~/components/Layout'
 import CustomAvatar from '~/components/CustomAvatar'
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [gnosis],
-  [
-    publicProvider(),
-    jsonRpcProvider({ rpc: () => ({ http: 'https://rpc.ankr.com/gnosis' }) }),
-  ]
+  [polygon],
+  [publicProvider()]
 )
 
 const projectId = process.env.NEXT_PUBLIC_WALLET_ID

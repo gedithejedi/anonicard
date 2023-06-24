@@ -16,14 +16,16 @@ import {
   useContractWrite,
   useWaitForTransaction,
 } from 'wagmi'
-import { goerli } from 'wagmi/chains'
+import { polygon } from 'wagmi/chains'
 import { NFTStorage, File } from 'nft.storage'
 
 import OriginalAnoni from '~/abi/OriginalAnoni.json'
 import nftConfig from '~/nftConfig.json'
 import Lit from '~/Lit'
 
+import { useToast } from '@chakra-ui/react'
 import Button from '~/components/Common/Button'
+import Loader from '~/components/Common/Loader'
 
 const STORAGE_API_KEY = process.env.NEXT_PUBLIC_STORAGE_API_KEY
 
@@ -75,6 +77,7 @@ const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
     formState: { errors },
   } = useForm<IFormValues>()
   const router = useRouter()
+  const toast = useToast()
 
   const [uri, setUri] = useState<string | undefined>()
   const [defaultImage, setDefaultImage] = useState<File>()
@@ -98,6 +101,13 @@ const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
       await storeAsset(data)
     } catch (e) {
       console.error(`Minting failed! ${e}`)
+      toast({
+        title: 'Anonycard minting failed.',
+        description: `Your Anonycard could not be minted! ${e}`,
+        status: 'error',
+        duration: 6000,
+        isClosable: true,
+      })
       setIsMinting(false)
     }
   }
@@ -117,7 +127,7 @@ const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
     abi: OriginalAnoni.abi,
     functionName: 'mint',
     args: [uri],
-    chainId: goerli.id,
+    chainId: polygon.id,
     enabled: Boolean(uri),
   })
 
@@ -190,6 +200,13 @@ const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
 
   useEffect(() => {
     if (isSuccess) {
+      toast({
+        title: 'Anonycard minted.',
+        description: 'Your Anonycard has been successfully minted!',
+        status: 'success',
+        duration: 6000,
+        isClosable: true,
+      })
       onSuccess()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -211,36 +228,69 @@ const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
     })
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex flex-col gap-y-2">
-        <label className="flex flex-col">
-          Profile Image
-          <input
-            type="file"
-            className="bg-white"
-            accept="image/png, image/jpeg, image/jpg"
-            {...register('Profile Image', { required: true })}
+    <>
+      {isMinting && <Loader />}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex flex-col gap-y-2">
+          <label className="flex flex-col">
+            Profile Image
+            <input
+              type="file"
+              className="bg-white"
+              accept="image/png, image/jpeg, image/jpg"
+              {...register('Profile Image', { required: true })}
+            />
+            {errors['Profile Image'] && (
+              <span className="SubText text-red-500">
+                This field is required
+              </span>
+            )}
+          </label>
+          <Input
+            label="Full Name"
+            register={register}
+            error={errors['Full Name']}
+            required
           />
-          {errors['Profile Image'] && (
-            <span className="SubText text-red-500">This field is required</span>
-          )}
-        </label>
-        <Input
-          label="Full Name"
-          register={register}
-          error={errors['Full Name']}
-          required
-        />
-        {discordName !== '' ? (
-          <div className="relative">
-            <label className="flex flex-col">
-              Discord Handle
-              <input
-                disabled={true}
-                value={discordName}
-                {...(register('Discord Handle'), { required: true })}
-              />
+          {discordName !== '' ? (
+            <div className="relative">
+              <label className="flex flex-col">
+                Discord Handle
+                <input
+                  disabled={true}
+                  value={discordName}
+                  {...(register('Discord Handle'), { required: true })}
+                />
+                <a
+                  target="_blank"
+                  href={
+                    process.env.NODE_ENV === 'development'
+                      ? process.env.NEXT_PUBLIC_DISCORD_DEV
+                      : process.env.NEXT_PUBLIC_DISCORD_PROD
+                  }
+                >
+                  <svg
+                    className="absolute right-2 bottom-2 my-auto w-6 h-6 cursor-pointer"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+                    />
+                  </svg>
+                </a>
+              </label>
+            </div>
+          ) : (
+            <>
+              <label>{'Discord Handle'}</label>
               <a
+                className="bg-discord text-white text-l max-w-[220px] py-2 rounded-md font-bold flex justify-center items-center space-x-4 hover:bg-gray-600 transition duration-75"
                 target="_blank"
                 href={
                   process.env.NODE_ENV === 'development'
@@ -248,51 +298,27 @@ const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
                     : process.env.NEXT_PUBLIC_DISCORD_PROD
                 }
               >
-                <svg
-                  className="absolute right-2 bottom-2 my-auto w-6 h-6 cursor-pointer"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-                  />
-                </svg>
+                Log in with Discord
               </a>
-            </label>
-          </div>
-        ) : (
-          <>
-            <label>{'Discord Handle'}</label>
-            <a
-              className="bg-discord text-white text-l max-w-[220px] py-2 rounded-md font-bold flex justify-center items-center space-x-4 hover:bg-gray-600 transition duration-75"
-              target="_blank"
-              href={
-                process.env.NODE_ENV === 'development'
-                  ? process.env.NEXT_PUBLIC_DISCORD_DEV
-                  : process.env.NEXT_PUBLIC_DISCORD_PROD
-              }
-            >
-              Log in with Discord
-            </a>
-          </>
-        )}
-        {errors['Discord Handle'] && (
-          <span className="SubText text-red-500">This field is required</span>
-        )}
-        <Input label="Job" register={register} error={errors['Job']} required />
-        <label className="flex flex-col Label">
-          Introduction
-          <textarea cols={4} {...register('Introduction')} />
-        </label>
-        <Button type="submit">submit</Button>
-      </div>
-    </form>
+            </>
+          )}
+          {errors['Discord Handle'] && (
+            <span className="SubText text-red-500">This field is required</span>
+          )}
+          <Input
+            label="Job"
+            register={register}
+            error={errors['Job']}
+            required
+          />
+          <label className="flex flex-col Label">
+            Introduction
+            <textarea cols={4} {...register('Introduction')} />
+          </label>
+          <Button type="submit">submit</Button>
+        </div>
+      </form>
+    </>
   )
 }
-
 export default OriginalForm
