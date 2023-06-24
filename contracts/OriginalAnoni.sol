@@ -30,3 +30,4 @@ contract OriginalAnoni is ERC721URIStorage {
     function totalSupply() public view returns (uint256) {
         return _tokenIds.current();
     }
+}
