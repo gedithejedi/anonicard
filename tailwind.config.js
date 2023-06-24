@@ -9,6 +9,7 @@ module.exports = {
     extend: {
       colors: {
         beige: '#fff8e7',
+        discord: '#5462eb',
       },
     },
   },

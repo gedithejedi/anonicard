@@ -30,6 +30,11 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
   ]
 )
 
+const projectId = process.env.NEXT_PUBLIC_WALLET_ID
+
+if (!projectId) {
+  throw new Error('projectId is requried!')
+}
 const WALLET_ID = process.env.NEXT_PUBLIC_WALLET_ID
 if (!WALLET_ID) {
   throw new Error('Wallet ID is required!')
@@ -62,15 +67,15 @@ export default function App({ Component, pageProps }: AppProps) {
 
   const rainbowkitTheme = isConnected
     ? midnightTheme({
-        accentColor: '#000',
-        accentColorForeground: 'white',
-        borderRadius: 'small',
-        overlayBlur: 'small',
-      })
+      accentColor: '#000',
+      accentColorForeground: 'white',
+      borderRadius: 'small',
+      overlayBlur: 'small',
+    })
     : lightTheme({
-        accentColor: '#fff',
-        accentColorForeground: 'black',
-      })
+      accentColor: '#fff',
+      accentColorForeground: 'black',
+    })
 
   return (
     <WagmiConfig config={wagmiConfig}>

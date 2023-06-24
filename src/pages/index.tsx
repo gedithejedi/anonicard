@@ -95,8 +95,8 @@ export default function Home() {
         ) : (
           <>
             <p className="mb-10">
-              You do not own a Anoni yet! Please verify that you are a human and
-              create your Anoni!
+              You do not own an Anoni yet! Please verify that you are a human and
+              create your first Anoni Card!
             </p>
 
             {error && (
