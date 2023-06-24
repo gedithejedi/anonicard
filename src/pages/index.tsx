@@ -48,18 +48,20 @@ export default function Home() {
 
   // TODO: return error when user login with not orb id
   const handleProof = useCallback((result: ISuccessResult) => {
-    return new Promise<void>((resolve) => {
-      setTimeout(() => resolve(), 3000)
+    return new Promise<void>((resolve, reject) => {
+      if (result.credential_type !== 'orb') {
+        setError('Unique human should be verified with Orb!')
+        reject('Unique human should be verified with Orb!')
+      }
+
+      resolve()
     })
   }, [])
 
   const onSuccess = (result: ISuccessResult) => {
-    if (result.credential_type !== 'orb') {
-      setError('Unique human should be verified with Orb!')
-    } else {
-      setError(undefined)
-      router.push('/create/original-anoni')
-    }
+    setError(undefined)
+    router.push('/create/original-anoni')
+    console.log('?')
   }
 
   return (
@@ -101,7 +103,7 @@ export default function Home() {
 
             {error && (
               <span className="text-red-500">
-                Oops.. Error occured... `&quot;`{error}`&quot;`
+                Oops.. Error occured... &quot;{error}&quot;
               </span>
             )}
             {WORLDCOIN_ID && (
