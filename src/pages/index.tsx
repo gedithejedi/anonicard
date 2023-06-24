@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
+import { useDisclosure } from '@chakra-ui/react'
 
 import alchemy from '~/alchemy'
 import { useAccount } from 'wagmi'
@@ -10,6 +11,7 @@ import type { ISuccessResult } from '@worldcoin/idkit'
 import Box from '~/components/Common/Box'
 import Button from '~/components/Common/Button'
 import OriginalForm from '~/components/OriginalForm'
+import Modal from '~/components/Common/Modal'
 import useUserOwnedNfts from '~/hooks/useUserOwnedNfts'
 
 interface OriginalNFT {
@@ -35,6 +37,7 @@ export default function Home() {
   const { address } = useAccount()
   const [error, setError] = useState<string | undefined>()
   const router = useRouter()
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const {
     nfts: originalNFTs,
@@ -60,12 +63,19 @@ export default function Home() {
 
   const onSuccess = (result: ISuccessResult) => {
     setError(undefined)
-    router.push('/create/original-anoni')
-    console.log('?')
+    onOpen()
+  }
+
+  const onFormSucess = () => {
+    onClose()
+    getUserOwnedNfts()
   }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-4">
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <OriginalForm onSuccess={onClose} />
+      </Modal>
       <Box classes="bg-beige" title="My Anoni">
         {isLoadingNFTs ? (
           'Loading ... '
