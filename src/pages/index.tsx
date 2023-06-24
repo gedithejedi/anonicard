@@ -27,6 +27,9 @@ interface OriginalNFT {
 // )
 
 const WORLDCOIN_ID = process.env.NEXT_PUBLIC_WORLDCOIN_ID
+if (!WORLDCOIN_ID) {
+  throw new Error('Wordcoin ID is required!')
+}
 
 export default function Home() {
   const { address } = useAccount()
@@ -101,16 +104,20 @@ export default function Home() {
                 Oops.. Error occured... `&quot;`{error}`&quot;`
               </span>
             )}
-            <IDKitWidget
-              action="verifyhuman"
-              onSuccess={onSuccess}
-              handleVerify={handleProof}
-              app_id={WORLDCOIN_ID}
-            >
-              {({ open }) => (
-                <Button onClick={open}>Yes, I am verified Human!</Button>
-              )}
-            </IDKitWidget>
+            {WORLDCOIN_ID && (
+              <IDKitWidget
+                action="verifyhuman"
+                onSuccess={onSuccess}
+                handleVerify={handleProof}
+                app_id={WORLDCOIN_ID}
+              >
+                {({ open }) => (
+                  <Button type="button" onClick={open}>
+                    Yes, I am verified Human!
+                  </Button>
+                )}
+              </IDKitWidget>
+            )}
           </>
         )}
       </Box>
