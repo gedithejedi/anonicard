@@ -44,18 +44,17 @@ interface IFormValues {
 
 type InputProps = {
   disabled?: boolean
-  value?: string
   label: Path<IFormValues>
   register: UseFormRegister<IFormValues>
   required?: boolean
   error?: FieldError
 }
 
-const Input = ({ disabled = false, value = "", label, register, required = false, error }: InputProps) => (
+const Input = ({ label, register, required = false, error }: InputProps) => (
   <>
     <label className="flex flex-col">
       {label}
-      <input {...register(label, { required })} value={value} placeholder={value} disabled={disabled} />
+      <input {...register(label, { required })} />
     </label>
     {error && (
       <span className="SubText text-red-500">This field is required</span>
@@ -77,10 +76,10 @@ const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
   } = useForm<IFormValues>()
   const router = useRouter()
 
-  const [uri, setUri] = useState<string | undefined>();
-  const [defaultImage, setDefaultImage] = useState<File>();
-  const [isMinting, setIsMinting] = useState<boolean>(false);
-  const [discordName, setDiscordName] = useState("");
+  const [uri, setUri] = useState<string | undefined>()
+  const [defaultImage, setDefaultImage] = useState<File>()
+  const [isMinting, setIsMinting] = useState<boolean>(false)
+  const [discordName, setDiscordName] = useState('')
 
   // TODO: replace it with Nouns image
   const loadDefaultImage = async () => {
@@ -200,15 +199,16 @@ const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
     loadDefaultImage()
   }, [])
 
-  window && window.addEventListener('storage', () => {
-    const localStorageName = localStorage.getItem("discordName");
-    console.log(localStorageName);
-    if (localStorageName == null) {
-      throw new Error("Something went wrong fetching localstorage discord username");
-    }
+  window &&
+    window.addEventListener('storage', () => {
+      const localStorageName = localStorage.getItem('discordName')
+      console.log(localStorageName)
+      if (localStorageName == null) {
+        return
+      }
 
-    setDiscordName(localStorageName);
-  })
+      setDiscordName(localStorageName)
+    })
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -231,38 +231,59 @@ const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
           error={errors['Full Name']}
           required
         />
-        {discordName !== "" ?
-          <div className='relative'>
-            <Input
-              disabled={true}
-              label="Discord Handle"
-              register={register}
-              value={discordName}
-              error={errors['Discord Handle']}
-              required
-            />
-            <a
-              target="_blank"
-              href={process.env.NODE_ENV === "development" ? process.env.NEXT_PUBLIC_DISCORD_DEV : process.env.NEXT_PUBLIC_DISCORD_PROD}
-            >
-              <svg
-                className="absolute right-2 bottom-2 my-auto w-6 h-6 cursor-pointer"
-                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-              </svg>
-            </a>
+        {discordName !== '' ? (
+          <div className="relative">
+            <label className="flex flex-col">
+              Discord Handle
+              <input
+                disabled={true}
+                value={discordName}
+                {...(register('Discord Handle'), { required: true })}
+              />
+              <a
+                target="_blank"
+                href={
+                  process.env.NODE_ENV === 'development'
+                    ? process.env.NEXT_PUBLIC_DISCORD_DEV
+                    : process.env.NEXT_PUBLIC_DISCORD_PROD
+                }
+              >
+                <svg
+                  className="absolute right-2 bottom-2 my-auto w-6 h-6 cursor-pointer"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+                  />
+                </svg>
+              </a>
+            </label>
           </div>
-          :
+        ) : (
           <>
-            <label>{"Discord Handle"}</label>
+            <label>{'Discord Handle'}</label>
             <a
               className="bg-discord text-white text-l max-w-[220px] py-2 rounded-md font-bold flex justify-center items-center space-x-4 hover:bg-gray-600 transition duration-75"
               target="_blank"
-              href={process.env.NODE_ENV === "development" ? process.env.NEXT_PUBLIC_DISCORD_DEV : process.env.NEXT_PUBLIC_DISCORD_PROD}>
+              href={
+                process.env.NODE_ENV === 'development'
+                  ? process.env.NEXT_PUBLIC_DISCORD_DEV
+                  : process.env.NEXT_PUBLIC_DISCORD_PROD
+              }
+            >
               Log in with Discord
             </a>
           </>
-        }
+        )}
+        {!discordName && errors['Discord Handle'] && (
+          <span className="SubText text-red-500">This field is required</span>
+        )}
         <Input label="Job" register={register} error={errors['Job']} required />
         <label className="flex flex-col Label">
           Introduction
