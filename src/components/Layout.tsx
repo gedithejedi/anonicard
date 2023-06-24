@@ -2,6 +2,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit'
 import Link from 'next/link'
 import { useAccount } from 'wagmi'
 
+import Providers from '~/components/Providers'
 import { useIsMounted } from '~/hooks/useIsMounted'
 import Button from '~/components/Common/Button'
 
@@ -18,7 +19,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         </Link>
         <ConnectButton />
       </div>
-      <main className="py-5 px-3">{children}</main>
+      <main className="py-5 px-3">
+        <Providers>{children}</Providers>
+      </main>
     </>
   ) : (
     <main className="bg-black p-5 h-screen text-white text-center flex flex-col items-center justify-center gap-y-10">

@@ -32,6 +32,7 @@ const nftName = 'originalAnoni'
 const nftDescription =
   'This is Original Anoni card. This will be original of Anonicard that will be minted in the future.'
 
+// FORM TYPES
 interface IFormValues {
   // TODO: Image should have size limit (else converting blob to string will fail)
   'Profile Image': File[]
@@ -62,7 +63,12 @@ const Input = ({ disabled = false, value = "", label, register, required = false
   </>
 )
 
-const OriginalForm: React.FC = () => {
+// COMPONENT PROP TYPE
+interface Props {
+  onSuccess: () => void
+}
+
+const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
   const {
     register,
     handleSubmit,
@@ -184,7 +190,9 @@ const OriginalForm: React.FC = () => {
   }, [uri, write, data])
 
   useEffect(() => {
-    router.push('/')
+    if (isSuccess) {
+      onSuccess()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccess])
 

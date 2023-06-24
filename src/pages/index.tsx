@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import dynamic from 'next/dynamic'
-import { useRouter } from 'next/navigation'
+import { useDisclosure } from '@chakra-ui/react'
 
 import alchemy from '~/alchemy'
 import { useAccount } from 'wagmi'
@@ -10,6 +10,7 @@ import type { ISuccessResult } from '@worldcoin/idkit'
 import Box from '~/components/Common/Box'
 import Button from '~/components/Common/Button'
 import OriginalForm from '~/components/OriginalForm'
+import Modal from '~/components/Common/Modal'
 import useUserOwnedNfts from '~/hooks/useUserOwnedNfts'
 
 interface OriginalNFT {
@@ -34,7 +35,7 @@ if (!WORLDCOIN_ID) {
 export default function Home() {
   const { address } = useAccount()
   const [error, setError] = useState<string | undefined>()
-  const router = useRouter()
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const {
     nfts: originalNFTs,
@@ -47,23 +48,35 @@ export default function Home() {
   }, [])
 
   // TODO: return error when user login with not orb id
+  //TODO: add back timeout
   const handleProof = useCallback((result: ISuccessResult) => {
-    return new Promise<void>((resolve) => {
-      setTimeout(() => resolve(), 3000)
+    return new Promise<void>((resolve, reject) => {
+      if (result.credential_type !== 'orb') {
+        setError('Unique human should be verified with Orb!')
+        reject('Unique human should be verified with Orb!')
+      }
+
+      resolve()
     })
   }, [])
 
   const onSuccess = (result: ISuccessResult) => {
-    if (result.credential_type !== 'orb') {
-      setError('Unique human should be verified with Orb!')
-    } else {
-      setError(undefined)
-      router.push('/create/original-anoni')
-    }
+    setError(undefined)
+    onOpen()
+  }
+
+  const onFormSucess = () => {
+    onClose()
+    getUserOwnedNfts()
   }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-4">
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <div className="py-5">
+          <OriginalForm onSuccess={onClose} />
+        </div>
+      </Modal>
       <Box classes="bg-beige" title="My Anoni">
         {isLoadingNFTs ? (
           'Loading ... '
@@ -101,7 +114,7 @@ export default function Home() {
 
             {error && (
               <span className="text-red-500">
-                Oops.. Error occured... `&quot;`{error}`&quot;`
+                Oops.. Error occured... &quot;{error}&quot;
               </span>
             )}
             {WORLDCOIN_ID && (
