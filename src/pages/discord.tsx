@@ -1,18 +1,18 @@
+import { useEffect, useState } from "react";
+import { useDiscordAccountStore } from "~/store/discord";
 
 const discord = () => {
+  const [discordName, setDiscordName] = useState("");
 
-  // const getDiscrodUser = async () => {
-  //   const res = await fetch("", {
-  //     method: "POST",
-  //     headers: {
-  //       'Content-Type': 'application/x-www-form-urlencoded'
-  //     }
+  window && window.addEventListener('storage', () => {
+    const localStorageName = localStorage.getItem("discordName");
+    console.log(localStorageName);
+    if (localStorageName == null) {
+      throw new Error("Something went wrong fetching localstorage discord username");
+    }
 
-  //   })
-
-  //   const data = await res.json();
-  //   console.log(data);
-  // }
+    setDiscordName(localStorageName);
+  })
 
   return (
     <>
@@ -24,6 +24,9 @@ const discord = () => {
           href='https://discord.com/api/oauth2/authorize?client_id=1122030353213837362&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2FverifyDiscord&response_type=token&scope=identify'>
           Log in with Discord
         </a>
+      </div>
+      <div>
+        {discordName && <span>The discord username is: {discordName}</span>}
       </div>
     </>
   )
