@@ -2,8 +2,7 @@ import * as LitJsSdk from '@lit-protocol/lit-node-client'
 import nftConfig from '~/nftConfig.json'
 
 const client = new LitJsSdk.LitNodeClient()
-// TODO: update chain to xdai (or whatever equivalent to)
-const chain = 'goerli'
+const chain = 'xdai'
 
 // Checks if the user owns the token
 const accessControlConditions = (contractName, tokenId) => [

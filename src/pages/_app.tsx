@@ -8,7 +8,7 @@ import {
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit'
 import { configureChains, createConfig, WagmiConfig, useAccount } from 'wagmi'
-import { gnosisChiado } from '@wagmi/chains'
+import { gnosis } from '@wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
@@ -20,13 +20,11 @@ import type { AppProps } from 'next/app'
 import Layout from '~/components/Layout'
 import CustomAvatar from '~/components/CustomAvatar'
 
-// TODO: change goerli to gnosis or gnosisChiado
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [goerli],
-  // [gnosisChiado],
+  [gnosis],
   [
     publicProvider(),
-    // jsonRpcProvider({ rpc: () => ({ http: 'https://rpc.ankr.com/gnosis' }) }), //<<<< New RPC Provider
+    jsonRpcProvider({ rpc: () => ({ http: 'https://rpc.ankr.com/gnosis' }) }), //<<<< New RPC Provider
   ]
 )
 
@@ -67,15 +65,15 @@ export default function App({ Component, pageProps }: AppProps) {
 
   const rainbowkitTheme = isConnected
     ? midnightTheme({
-      accentColor: '#000',
-      accentColorForeground: 'white',
-      borderRadius: 'small',
-      overlayBlur: 'small',
-    })
+        accentColor: '#000',
+        accentColorForeground: 'white',
+        borderRadius: 'small',
+        overlayBlur: 'small',
+      })
     : lightTheme({
-      accentColor: '#fff',
-      accentColorForeground: 'black',
-    })
+        accentColor: '#fff',
+        accentColorForeground: 'black',
+      })
 
   return (
     <WagmiConfig config={wagmiConfig}>
