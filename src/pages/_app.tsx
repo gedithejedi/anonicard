@@ -4,9 +4,10 @@ import '@rainbow-me/rainbowkit/styles.css'
 import {
   getDefaultWallets,
   midnightTheme,
+  lightTheme,
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit'
-import { configureChains, createConfig, WagmiConfig } from 'wagmi'
+import { configureChains, createConfig, WagmiConfig, useAccount } from 'wagmi'
 import { gnosisChiado } from '@wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
@@ -47,16 +48,25 @@ const robotoMono = Roboto_Mono({
 })
 
 export default function App({ Component, pageProps }: AppProps) {
+  const { isConnected } = useAccount()
+
+  const rainbowkitTheme = isConnected
+    ? midnightTheme({
+        accentColor: '#000',
+        accentColorForeground: 'white',
+        borderRadius: 'small',
+        overlayBlur: 'small',
+      })
+    : lightTheme({
+        accentColor: '#fff',
+        accentColorForeground: 'black',
+      })
+
   return (
     <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider
         avatar={CustomAvatar}
-        theme={midnightTheme({
-          accentColor: '#000',
-          accentColorForeground: 'white',
-          borderRadius: 'small',
-          overlayBlur: 'small',
-        })}
+        theme={rainbowkitTheme}
         appInfo={appInformation}
         chains={chains}
       >
