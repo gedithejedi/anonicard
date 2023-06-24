@@ -66,7 +66,7 @@ interface Props {
   onSuccess: () => void
 }
 
-const OriginalForm: React.FC = ({ onSuccess }) => {
+const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
   const {
     register,
     handleSubmit,

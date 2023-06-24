@@ -19,17 +19,10 @@ interface Props {
   children?: React.ReactNode
   title?: string
   isOpen: boolean
-  onOpen: () => void
   onClose: () => void
 }
 
-const BaseModal: React.FC<Props> = ({
-  children,
-  title,
-  isOpen,
-  onOpen,
-  onClose,
-}) => {
+const BaseModal: React.FC<Props> = ({ children, title, isOpen, onClose }) => {
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>

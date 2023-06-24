@@ -2,7 +2,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit'
 import Link from 'next/link'
 import { useAccount } from 'wagmi'
 
-import { Providers } from '~/components/providers'
+import Providers from '~/components/Providers'
 import { useIsMounted } from '~/hooks/useIsMounted'
 import Button from '~/components/Common/Button'
 
