@@ -1,8 +1,15 @@
 import Box from '~/components/Common/Box'
 import dynamic from 'next/dynamic'
-const OriginalForm = dynamic(() => import('~/components/OriginalForm'), {
-  ssr: false,
-})
+import OriginalForm from '~/components/OriginalForm'
+
+interface OriginalNFT {
+  tokenId: string
+  profileImage?: string
+  fullName: string
+  discordName: string
+  job: number
+  introduction: string
+}
 
 export default function Home() {
   return (
