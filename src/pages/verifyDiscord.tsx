@@ -28,7 +28,7 @@ const verifyDiscord = () => {
     }, 1000);
   }
 
-  useMemo(
+  const getDiscordLogin = useMemo(
     () => {
       const fragment = new URLSearchParams(window.location.hash.slice(1));
       const [tokenType, accessToken] = [fragment.get('access_token'), fragment.get('token_type')];
