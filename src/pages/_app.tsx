@@ -24,7 +24,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
   [gnosis],
   [
     publicProvider(),
-    jsonRpcProvider({ rpc: () => ({ http: 'https://rpc.ankr.com/gnosis' }) }), //<<<< New RPC Provider
+    jsonRpcProvider({ rpc: () => ({ http: 'https://rpc.ankr.com/gnosis' }) }),
   ]
 )
 
