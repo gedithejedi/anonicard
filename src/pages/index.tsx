@@ -31,7 +31,7 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-4">
-      <Box classes="bg-beige max-w-[500px]">
+      <Box classes="bg-beige">
         {isLoadingNFTs ? (
           'Loading ... '
         ) : originalNFTs.length ? (

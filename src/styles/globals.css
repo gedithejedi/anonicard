@@ -29,6 +29,6 @@ th {
   @apply flex pr-2;
 }
 
-/* tr + tr {
-  @apply border-b-2;
-} */
+.SubText {
+  @apply text-sm;
+}

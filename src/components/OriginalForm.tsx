@@ -53,7 +53,9 @@ const Input = ({ label, register, required = false, error }: InputProps) => (
       {label}
       <input {...register(label, { required })} />
     </label>
-    {error && <span className="SubText">This field is required</span>}
+    {error && (
+      <span className="SubText text-red-500">This field is required</span>
+    )}
   </>
 )
 
@@ -196,6 +198,9 @@ const OriginalForm: React.FC = () => {
             accept="image/png, image/jpeg, image/jpg"
             {...register('Profile Image', { required: true })}
           />
+          {errors['Profile Image'] && (
+            <span className="SubText text-red-500">This field is required</span>
+          )}
         </label>
         <Input
           label="Full Name"
@@ -212,10 +217,7 @@ const OriginalForm: React.FC = () => {
         <Input label="Job" register={register} error={errors['Job']} required />
         <label className="flex flex-col Label">
           Introduction
-          <textarea
-            cols={4}
-            {...register('Introduction', { required: true })}
-          />
+          <textarea cols={4} {...register('Introduction')} />
         </label>
         <Button type="submit">submit</Button>
       </div>
