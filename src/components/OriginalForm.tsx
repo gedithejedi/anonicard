@@ -63,7 +63,7 @@ const OriginalForm: React.FC = () => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm()
+  } = useForm<IFormValues>()
 
   const [uri, setUri] = useState<string | undefined>()
   const [defaultImage, setDefaultImage] = useState<File>()

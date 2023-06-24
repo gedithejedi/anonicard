@@ -30,9 +30,13 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
   ]
 )
 
+const WALLET_ID = process.env.NEXT_PUBLIC_WALLET_ID
+if (!WALLET_ID) {
+  throw new Error('Wallet ID is required!')
+}
 const { connectors } = getDefaultWallets({
   appName: 'Anonicard',
-  projectId: process.env.NEXT_PUBLIC_WALLET_ID,
+  projectId: WALLET_ID,
   chains,
 })
 
