@@ -1,4 +1,4 @@
-//SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/Counters.sol";
@@ -21,10 +21,13 @@ contract OriginalAnoni is ERC721URIStorage {
         return newItemId;
     }
 
+    function updateMetadata(uint256 tokenId, string memory newTokenURI) public {
+        require(ownerOf(tokenId) == msg.sender, "ERC721: caller is not the owner");
+
+        _setTokenURI(tokenId, newTokenURI);
+    }
 
     function totalSupply() public view returns (uint256) {
         return _tokenIds.current();
     }
-
-    // TODO: update function - update is available & only by owner
 }
