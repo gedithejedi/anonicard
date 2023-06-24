@@ -55,13 +55,13 @@ export default function Home() {
       setError('Unique human should be verified with Orb!')
     } else {
       setError(undefined)
-      router.push('/create/original-anony')
+      router.push('/create/original-anoni')
     }
   }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-4">
-      <Box classes="bg-beige">
+      <Box classes="bg-beige" title="My Anoni">
         {isLoadingNFTs ? (
           'Loading ... '
         ) : originalNFTs.length ? (
@@ -91,14 +91,25 @@ export default function Home() {
           </>
         ) : (
           <>
-            {error && <span>{error}</span>}
+            <p className="mb-10">
+              You do not own a Anoni yet! Please verify that you are a human and
+              create your Anoni!
+            </p>
+
+            {error && (
+              <span className="text-red-500">
+                Oops.. Error occured... `&quot;`{error}`&quot;`
+              </span>
+            )}
             <IDKitWidget
               action="verifyhuman"
               onSuccess={onSuccess}
               handleVerify={handleProof}
-              app_id={WORLDCOIN_ID} // obtain this from developer.worldcoin.org
+              app_id={WORLDCOIN_ID}
             >
-              {({ open }) => <Button onClick={open}>Click me</Button>}
+              {({ open }) => (
+                <Button onClick={open}>Yes, I am verified Human!</Button>
+              )}
             </IDKitWidget>
           </>
         )}
