@@ -5,11 +5,11 @@ module.exports = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
-  theme: {
-    colors: {
-      beige: '#fff8e7',
-      black: '#000',
-      white: '#fff',
+  extends: {
+    theme: {
+      colors: {
+        beige: '#fff8e7',
+      },
     },
   },
   plugins: [],

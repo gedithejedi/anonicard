@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { useDiscordAccountStore } from "~/store/discord";
+import { useState } from "react";
 
 const discord = () => {
   const [discordName, setDiscordName] = useState("");
@@ -13,7 +12,7 @@ const discord = () => {
 
     setDiscordName(localStorageName);
   })
-  //TODO: implement urls for both local and deployed on vercel versions
+
 
   return (
     <>
@@ -22,7 +21,7 @@ const discord = () => {
         <a
           className="bg-black text-xl px-5 py-3 rounded-md font-bold flex items-center space-x-4 hover:bg-gray-600 transition duration-75"
           target="_blank"
-          href='https://discord.com/api/oauth2/authorize?client_id=1122030353213837362&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2FverifyDiscord&response_type=token&scope=identify'>
+          href={process.env.NODE_ENV === "development" ? process.env.NEXT_PUBLIC_DISCORD_DEV : process.env.NEXT_PUBLIC_DISCORD_PROD}>
           Log in with Discord
         </a>
       </div>
