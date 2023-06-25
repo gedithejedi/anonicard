@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Path,
   useForm,
@@ -91,6 +91,7 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
   const [uris, setUris] = useState<string[] | undefined>()
   const [defaultImage, setDefaultImage] = useState<File>()
   const [isMinting, setIsMinting] = useState<boolean>(false)
+  const toast = useToast()
 
   // TODO: replace it with Nouns image
   const loadDefaultImage = async () => {
@@ -103,14 +104,19 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
     )
   }
 
-  const onSubmit: SubmitHandler<IFormValues> = (data) => {
+  useEffect(() => {
+    loadDefaultImage()
+  }, [])
+
+  const onSubmit: SubmitHandler<IFormValues> = async (data) => {
     setIsMinting(true)
     try {
-      const data = {
+      const nft = {
         ...data,
         ...defaultNft,
+        'Profile Image': data['Profile Image'],
       }
-      await storeAsset(data)
+      await storeAsset(nft)
     } catch (e) {
       console.error(`Minting failed! ${e}`)
       toast({
@@ -138,7 +144,7 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
     address: nftConfig.anonicard.address as `0x${string}`,
     abi: Anonicard.abi,
     functionName: 'mint',
-    args: [uris[0], uris[1]],
+    args: [toAddress, uris?.[0], uris?.[1]],
     chainId: polygon.id,
     enabled: Boolean(uris),
   })
@@ -159,10 +165,10 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
     })
 
     const { data: nftTotalSupply } = await refetch()
-    const encryptedInformation = await Lit.encryptObject(
+    const cardInfoEncryptedInformation = await Lit.encryptObject(
       nftName,
       {
-        walletAddress: formData['Wallet Address']
+        walletAddress: formData['Wallet Address'],
         fullName: formData['Full Name'],
         discordName: formData['Discord Handle'],
         job: formData['Job'],
@@ -178,19 +184,47 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
         String(Number(nftTotalSupply) + 1)
       )
 
-    // TODO: Encrypt image once we get getting NFT part done.
-    const metadata = await client.store({
+    const cardInfoMetadata = await client.store({
       name: nftName,
       description: nftDescription,
-      encryptedString: encryptedInformation?.encryptedString,
-      encryptedStringSymmetricKey: encryptedInformation?.encryptedSymmetricKey,
       image: defaultImage as File,
+
+      encryptedString: cardInfoEncryptedInformation?.encryptedString,
+      encryptedStringSymmetricKey:
+        cardInfoEncryptedInformation?.encryptedSymmetricKey,
       encryptedImage: encryptedFile,
       encryptedFileSymmetricKey,
     })
+    console.log(
+      'CardInfoMetadata stored on Filecoin and IPFS with URL:',
+      cardInfoMetadata.url
+    )
 
-    setUri(metadata.url)
-    console.log('Metadata stored on Filecoin and IPFS with URL:', metadata.url)
+    const customFieldsInformation = await Lit.encryptObject(
+      nftName,
+      {
+        occassion: formData['Occassion'],
+        memo: formData['Memo'],
+      },
+      String(Number(nftTotalSupply) + 1)
+    )
+
+    const customFieldsMetadata = await client.store({
+      name: nftName,
+      description: nftDescription,
+      image: defaultImage as File,
+
+      encryptedString: cardInfoEncryptedInformation?.encryptedString,
+      encryptedStringSymmetricKey:
+        cardInfoEncryptedInformation?.encryptedSymmetricKey,
+    })
+
+    console.log(
+      'CustomFieldsMetadata stored on Filecoin and IPFS with URL:',
+      customFieldsMetadata.url
+    )
+
+    setUris([cardInfoMetadata.url, customFieldsMetadata.url])
   }
 
   const onReadQrCode = (data) => {
@@ -204,13 +238,13 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
           send from: {defaultNft['Wallet Address']}
         </p>
 
+        {/* TODO: add back disabled */}
         <label className="flex flex-col">
           Profile Image
           <input
             type="file"
             className="bg-white"
             accept="image/png, image/jpeg, image/jpg"
-            disabled={true}
             {...register('Profile Image')}
           />
         </label>
