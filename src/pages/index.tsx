@@ -6,12 +6,14 @@ import alchemy from '~/alchemy'
 import { useAccount } from 'wagmi'
 import { CredentialType, IDKitWidget } from '@worldcoin/idkit'
 import type { ISuccessResult } from '@worldcoin/idkit'
+import { useLazyQuery } from "@airstack/airstack-react";
 
 import Box from '~/components/Common/Box'
 import Button from '~/components/Common/Button'
 import OriginalForm from '~/components/OriginalForm'
 import Modal from '~/components/Common/Modal'
 import useUserOwnedNfts from '~/hooks/useUserOwnedNfts'
+import { query } from '~/util/query'
 
 interface OriginalNFT {
   tokenId: string
@@ -38,14 +40,18 @@ export default function Home() {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const {
-    nfts: originalNFTs,
-    isLoadingNFTs,
-    getUserOwnedNfts,
+    airstackFetch,
+    nfts,
+    loading
   } = useUserOwnedNfts<OriginalNFT>('originalAnoni')
 
   useEffect(() => {
-    getUserOwnedNfts()
+    airstackFetch()
   }, [])
+
+  useEffect(() => {
+    console.log(nfts)
+  }, [nfts])
 
   const handleProof = async (result: ISuccessResult) => {
     const reqBody = {
@@ -84,73 +90,75 @@ export default function Home() {
 
   const onFormSucess = () => {
     onClose()
-    getUserOwnedNfts()
+    airstackFetch()
   }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-4">
       <Modal isOpen={isOpen} onClose={onClose}>
         <div className="py-5">
-          <OriginalForm onSuccess={onClose} />
+          <OriginalForm onSuccess={onFormSucess} />
         </div>
       </Modal>
       <Box classes="bg-beige" title="My Anoni">
-        {isLoadingNFTs ? (
-          'Loading ... '
-        ) : originalNFTs.length ? (
-          <>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={originalNFTs[0].profileImage} alt="profile" />
-            <table>
-              <tbody className="divide-y-2 divide-solid div-">
-                <tr>
-                  <th>Full Name</th>
-                  <td>{originalNFTs[0].fullName}</td>
-                </tr>
-                <tr>
-                  <th>Discord Name</th>
-                  <td>{originalNFTs[0].discordName}</td>
-                </tr>
-                <tr>
-                  <th>Job</th>
-                  <td>{originalNFTs[0].job}</td>
-                </tr>
-                <tr>
-                  <th>Introduction</th>
-                  <td>{originalNFTs[0].introduction}</td>
-                </tr>
-              </tbody>
-            </table>
-          </>
-        ) : (
-          <>
-            <p className="mb-10">
-              You do not own an Anoni yet! Please verify that you are a human
-              and create your first Anoni Card!
-            </p>
+        {
+          loading ? (
+            'Loading ... '
+          ) : nfts.length ? (
+            <>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={nfts[0].profileImage} alt="profile" />
+              <table>
+                <tbody className="divide-y-2 divide-solid div-">
+                  <tr>
+                    <th>Full Name</th>
+                    <td>{nfts[0].fullName}</td>
+                  </tr>
+                  <tr>
+                    <th>Discord Name</th>
+                    <td>{nfts[0].discordName}</td>
+                  </tr>
+                  <tr>
+                    <th>Job</th>
+                    <td>{nfts[0].job}</td>
+                  </tr>
+                  <tr>
+                    <th>Introduction</th>
+                    <td>{nfts[0].introduction}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </>
+          ) : (
+            <>
+              <p className="mb-10">
+                You do not own an Anoni yet! Please verify that you are a human
+                and create your first Anoni Card!
+              </p>
 
-            {error && (
-              <span className="text-red-500">
-                Oops.. Error occured... &quot;{error}&quot;
-              </span>
-            )}
-            {WORLDCOIN_ID && (
-              <IDKitWidget
-                action={process.env.NEXT_PUBLIC_WLD_ACTION_NAME!}
-                onSuccess={onSuccess}
-                handleVerify={handleProof}
-                app_id={WORLDCOIN_ID}
-                credential_types={[CredentialType.Orb]}
-              >
-                {({ open }) => (
-                  <Button type="button" onClick={open}>
-                    Yes, I am verified Human!
-                  </Button>
-                )}
-              </IDKitWidget>
-            )}
-          </>
-        )}
+              {error && (
+                <span className="text-red-500">
+                  Oops.. Error occured... &quot;{error}&quot;
+                </span>
+              )}
+              {WORLDCOIN_ID && (
+                <IDKitWidget
+                  action={process.env.NEXT_PUBLIC_WLD_ACTION_NAME!}
+                  onSuccess={onSuccess}
+                  handleVerify={handleProof}
+                  app_id={WORLDCOIN_ID}
+                  credential_types={[CredentialType.Orb]}
+                >
+                  {({ open }) => (
+                    <Button type="button" onClick={open}>
+                      Yes, I am verified Human!
+                    </Button>
+                  )}
+                </IDKitWidget>
+              )}
+            </>
+          )
+        }
       </Box>
     </main>
   )
