@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 
-import { useLazyQuery } from "@airstack/airstack-react";
-import alchemy from '~/alchemy'
+import { useLazyQuery } from '@airstack/airstack-react'
 import { useAccount } from 'wagmi'
 
 import nftConfig from '~/nftConfig.json'
@@ -12,11 +11,15 @@ import { query } from '~/util/query'
 export default <T>(nftName: 'originalAnoni' | 'anonicard') => {
   const [nfts, setNFTs] = useState<T[]>([])
   // const [isLoadingNFTs, setIsLoadingNFTs] = useState(false)
-  const { address } = useAccount();
+  const { address } = useAccount()
 
-  const [airstackFetch, { data, loading, error: airstackErr }] = useLazyQuery(query, {});
+  const [airstackFetch, { data, loading, error: airstackErr }] = useLazyQuery(
+    query('originalAnoni', address!),
+    {}
+  )
 
   const getDecryptedValue = async () => {
+    console.log(data)
     if (!data?.TokenBalances?.TokenBalance) {
       return
     }
@@ -26,7 +29,10 @@ export default <T>(nftName: 'originalAnoni' | 'anonicard') => {
         let metadata
         let url
 
-        const ipfsURI = token.tokenNfts.tokenURI.replace('ipfs://', 'https://ipfs.io/ipfs/')
+        const ipfsURI = token.tokenNfts.tokenURI.replace(
+          'ipfs://',
+          'https://ipfs.io/ipfs/'
+        )
         const res = await fetch(ipfsURI)
         const encryptedMetadata = await res.json()
 
@@ -73,9 +79,7 @@ export default <T>(nftName: 'originalAnoni' | 'anonicard') => {
     }
 
     getDecryptedValue()
-
   }, [data])
-
 
   return { airstackFetch, nfts, loading }
 }
