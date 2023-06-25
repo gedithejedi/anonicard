@@ -8,6 +8,7 @@ import {
 } from 'react-hook-form'
 import IOriginalNft from '~/types'
 import Button from '~/components/Common/Button'
+import QrReader from 'react-qr-scanner'
 
 const STORAGE_API_KEY = process.env.NEXT_PUBLIC_STORAGE_API_KEY
 
