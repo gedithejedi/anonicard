@@ -36,7 +36,7 @@ const nftDescription =
 // FORM TYPES
 interface IFormValues {
   // TODO: Image should have size limit (else converting blob to string will fail)
-  'Profile Image': File | undefined;
+  'Profile Image': File[] | undefined;
   'Full Name': string;
   'Discord Handle': string;
   Job: string;
@@ -107,7 +107,6 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
   const onSubmit: SubmitHandler<IFormValues> = async (data) => {
     setIsMinting(true)
     try {
-      console.log(discordName);
       const dataWithDiscordId = {
         ...data,
         'Discord Handle': discordName || ""
@@ -133,25 +132,28 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
     functionName: 'totalSupply',
   })
 
-  let contractSettings = {};
-
-  // const {
-  //   config,
-  //   error: prepareError,
-  //   isError: isPrepareError,
-  // } = usePrepareContractWrite({
-  //   address: nftConfig.originalAnoni.address as `0x${string}`,
-  //   abi: OriginalAnoni.abi,
-  //   functionName: 'mint',
-  //   args: [uri],
-  //   chainId: polygon.id,
-  //   enabled: Boolean(uri),
-  // })
-
   const {
     config,
     error: prepareError,
     isError: isPrepareError,
+  } = usePrepareContractWrite({
+    address: nftConfig.originalAnoni.address as `0x${string}`,
+    abi: OriginalAnoni.abi,
+    functionName: 'mint',
+    args: [uri],
+    chainId: polygon.id,
+    enabled: Boolean(uri),
+  })
+  const { data, error, isError, write } = useContractWrite(config);
+
+  const { isLoading, isSuccess } = useWaitForTransaction({
+    hash: data?.hash,
+  })
+
+  const {
+    config: updateConfig,
+    error: updatePrepareError,
+    isError: updateIsPrepareError,
   } = usePrepareContractWrite({
     address: nftConfig.originalAnoni.address as `0x${string}`,
     abi: OriginalAnoni.abi,
@@ -161,10 +163,10 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
     enabled: Boolean(uri),
   })
 
-  const { data, error, isError, write } = useContractWrite(config)
+  const { data: updateData, error: updateError, isError: updateIsErorr, write: updateWrite } = useContractWrite(config)
 
-  const { isLoading, isSuccess } = useWaitForTransaction({
-    hash: data?.hash,
+  const { isLoading: updateIsLoading, isSuccess: updateIsSuccess } = useWaitForTransaction({
+    hash: updateData?.hash,
   })
 
   async function storeAsset(formData: IFormValues, defaultTokenId?: string) {
@@ -202,7 +204,7 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
     const metadata = await client.store({
       name: nftName,
       description: nftDescription,
-      encryptedString: "encryptedInformation?.encryptedString",
+      encryptedString: encryptedInformation?.encryptedString,
       encryptedStringSymmetricKey: encryptedInformation?.encryptedSymmetricKey,
       image: defaultImage as File,
       encryptedImage: encryptedFile,
@@ -210,6 +212,7 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
     })
 
     setUri(metadata.url)
+
     console.log('Metadata stored on Filecoin and IPFS with URL:', metadata.url)
   }
 
