@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 
 import { useLazyQuery } from '@airstack/airstack-react'
-import alchemy from '~/alchemy'
 import { useAccount } from 'wagmi'
 
 import nftConfig from '~/nftConfig.json'
@@ -15,7 +14,7 @@ export default <T>(nftName: 'originalAnoni' | 'anonicard') => {
   const { address } = useAccount()
 
   const [airstackFetch, { data, loading, error: airstackErr }] = useLazyQuery(
-    query('originalAnoni', address),
+    query('originalAnoni', address!),
     {}
   )
 

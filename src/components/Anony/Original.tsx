@@ -3,7 +3,6 @@ import React from 'react'
 import { useDisclosure } from '@chakra-ui/react'
 // import dynamic from 'next/dynamic'
 
-import alchemy from '~/alchemy'
 import { useAccount } from 'wagmi'
 import { CredentialType, IDKitWidget } from '@worldcoin/idkit'
 import type { ISuccessResult } from '@worldcoin/idkit'
