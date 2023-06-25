@@ -195,7 +195,7 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
     const metadata = await client.store({
       name: nftName,
       description: nftDescription,
-      encryptedString: 'encryptedInformation?.encryptedString',
+      encryptedString: encryptedInformation?.encryptedString,
       encryptedStringSymmetricKey: encryptedInformation?.encryptedSymmetricKey,
       image: defaultImage as File,
       encryptedImage: encryptedFile,
