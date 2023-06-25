@@ -96,8 +96,6 @@ class Lit {
       await this.connect() // Connect to Lit Network if not already
     }
 
-    console.log(nftConfig[contractName].address)
-
     const authSig = await LitJsSdk.checkAndSignAuthMessage({ chain })
 
     const { encryptedFile, symmetricKey } = await LitJsSdk.encryptFile({

@@ -24,7 +24,7 @@ import Lit from '~/Lit'
 import { useToast } from '@chakra-ui/react'
 import Button from '~/components/Common/Button'
 import Loader from '~/components/Common/Loader'
-import { OriginalNFT } from './Anony/Original'
+import { OriginalNFT } from '~/components/Anoni/Original'
 
 const STORAGE_API_KEY = process.env.NEXT_PUBLIC_STORAGE_API_KEY
 
@@ -36,11 +36,11 @@ const nftDescription =
 // FORM TYPES
 interface IFormValues {
   // TODO: Image should have size limit (else converting blob to string will fail)
-  'Profile Image': File | undefined;
-  'Full Name': string;
-  'Discord Handle': string;
-  Job: string;
-  Introduction: string;
+  'Profile Image': File[] | undefined
+  'Full Name': string
+  'Discord Handle': string
+  Job: string
+  Introduction: string
 }
 
 type InputProps = {
@@ -69,9 +69,7 @@ interface Props {
   oldData: OriginalNFT
 }
 
-
 const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
-
   const {
     register,
     handleSubmit,
@@ -84,7 +82,7 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
       Job: oldData?.job || '',
       Introduction: oldData?.introduction || '',
       'Profile Image': undefined,
-    }
+    },
   })
   const toast = useToast()
 
@@ -107,18 +105,18 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
   const onSubmit: SubmitHandler<IFormValues> = async (data) => {
     setIsMinting(true)
     try {
-      console.log(discordName);
+      console.log(discordName)
       const dataWithDiscordId = {
         ...data,
-        'Discord Handle': discordName || ""
+        'Discord Handle': discordName || '',
       }
 
       await storeAsset(dataWithDiscordId, oldData?.tokenId)
     } catch (e) {
       console.error(`Minting failed! ${e}`)
       toast({
-        title: 'Anonycard minting failed.',
-        description: `Your Anonycard could not be minted! ${e}`,
+        title: 'Anonicard minting failed.',
+        description: `Your Anonicard could not be minted! ${e}`,
         status: 'error',
         duration: 6000,
         isClosable: true,
@@ -133,7 +131,7 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
     functionName: 'totalSupply',
   })
 
-  let contractSettings = {};
+  let contractSettings = {}
 
   // const {
   //   config,
@@ -192,17 +190,13 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
     )
 
     const { encryptedFile, encryptedSymmetricKey: encryptedFileSymmetricKey } =
-      await Lit.encryptFile(
-        nftName,
-        formData['Profile Image']?.[0],
-        tokenId
-      )
+      await Lit.encryptFile(nftName, formData['Profile Image']?.[0], tokenId)
 
     // TODO: Encrypt image once we get getting NFT part done.
     const metadata = await client.store({
       name: nftName,
       description: nftDescription,
-      encryptedString: "encryptedInformation?.encryptedString",
+      encryptedString: 'encryptedInformation?.encryptedString',
       encryptedStringSymmetricKey: encryptedInformation?.encryptedSymmetricKey,
       image: defaultImage as File,
       encryptedImage: encryptedFile,
@@ -235,8 +229,8 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
   useEffect(() => {
     if (isSuccess) {
       toast({
-        title: 'Anonycard minted.',
-        description: 'Your Anonycard has been successfully minted!',
+        title: 'Anonicard minted.',
+        description: 'Your Anonicard has been successfully minted!',
         status: 'success',
         duration: 6000,
         isClosable: true,
@@ -260,16 +254,16 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
   }
 
   React.useEffect(() => {
-    window.addEventListener('storage', getDiscordHandleFromLocalStorage);
+    window.addEventListener('storage', getDiscordHandleFromLocalStorage)
 
     return () => {
-      window.removeEventListener('storage', getDiscordHandleFromLocalStorage);
-    };
-  }, []);
+      window.removeEventListener('storage', getDiscordHandleFromLocalStorage)
+    }
+  }, [])
 
   return (
     <>
-      {isMinting && <Loader />}
+      {(isMinting || isLoading) && <Loader />}
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-y-2">
           <label className="flex flex-col">
