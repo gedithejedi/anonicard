@@ -90,15 +90,14 @@ const OriginalFormEdit: React.FC<Props> = ({ onSuccess, oldData }) => {
 
   const [uri, setUri] = useState<string | undefined>()
   const [defaultImage, setDefaultImage] = useState<File>()
-  const [blobImage, setBlobImage] = useState("")
+  const [blobImage, setBlobImage] = useState('')
   const [isMinting, setIsMinting] = useState<boolean>(false)
   const [discordName, setDiscordName] = useState('')
-
 
   const getNounsImage = async () => {
     const res = await fetch('https://api.cloudnouns.com/v1/pfp')
     if (!res.ok) {
-      console.log(res.text());
+      console.log(res.text())
       throw new Error('Failed to fetch data')
     }
 
@@ -107,9 +106,8 @@ const OriginalFormEdit: React.FC<Props> = ({ onSuccess, oldData }) => {
     setValue('Profile Image', [file])
     setDefaultImage(file)
     const url = window.URL.createObjectURL(blob)
-    setBlobImage(url);
+    setBlobImage(url)
   }
-
 
   const onSubmit: SubmitHandler<IFormValues> = async (data) => {
     setIsMinting(true)
@@ -188,13 +186,13 @@ const OriginalFormEdit: React.FC<Props> = ({ onSuccess, oldData }) => {
     const metadata = await client.store({
       name: nftName,
       description: nftDescription,
-      encryptedString: 'encryptedInformation?.encryptedString',
+      encryptedString: encryptedInformation?.encryptedString,
       encryptedStringSymmetricKey: encryptedInformation?.encryptedSymmetricKey,
       image: defaultImage as File,
       encryptedImage: encryptedFile,
       encryptedFileSymmetricKey,
     })
-    console.log(metadata);
+    console.log(metadata)
     setUri(metadata.url)
     console.log('Metadata stored on Filecoin and IPFS with URL:', metadata.url)
   }
@@ -255,20 +253,19 @@ const OriginalFormEdit: React.FC<Props> = ({ onSuccess, oldData }) => {
     <>
       {(isMinting || isLoading) && <Loader />}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <h1 className='text-xl text-bold mb-8 text-center'>Edit an AnoniCard</h1>
+        <h1 className="text-xl text-bold mb-8 text-center">
+          Edit an AnoniCard
+        </h1>
         <div className="flex flex-col gap-y-2">
           <label className="flex flex-col">
             ProfileImage
-            <div className='flex flex-col'>
-              {defaultImage && <img src={blobImage} alt='noun image' />}
-              <p className='w-full flex gap-2'>
+            <div className="flex flex-col">
+              {defaultImage && <img src={blobImage} alt="noun image" />}
+              <p className="w-full flex gap-2">
                 1 file, {defaultImage?.name && defaultImage.name} uploaded
               </p>
-              <div className='flex gap-4 my-4 w-full'>
-                <Button
-                  onClick={() => getNounsImage()}
-                  type={'button'}
-                >
+              <div className="flex gap-4 my-4 w-full">
+                <Button onClick={() => getNounsImage()} type={'button'}>
                   Get Nouns Picture
                 </Button>
               </div>
