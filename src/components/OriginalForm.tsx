@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useState, useEffect } from 'react'
 import {
   Path,
@@ -10,7 +10,6 @@ import {
 
 import {
   useContractRead,
-  useAccount,
   usePrepareContractWrite,
   useContractWrite,
   useWaitForTransaction,
@@ -25,6 +24,7 @@ import Lit from '~/Lit'
 import { useToast } from '@chakra-ui/react'
 import Button from '~/components/Common/Button'
 import Loader from '~/components/Common/Loader'
+import { OriginalNFT } from './Anony/Original'
 
 const STORAGE_API_KEY = process.env.NEXT_PUBLIC_STORAGE_API_KEY
 
@@ -36,11 +36,11 @@ const nftDescription =
 // FORM TYPES
 interface IFormValues {
   // TODO: Image should have size limit (else converting blob to string will fail)
-  'Profile Image': File[]
-  'Full Name': string
-  'Discord Handle': string
-  Job: number
-  Introduction: string
+  'Profile Image': File | undefined;
+  'Full Name': string;
+  'Discord Handle': string;
+  Job: string;
+  Introduction: string;
 }
 
 type InputProps = {
@@ -66,15 +66,26 @@ const Input = ({ label, register, required = false, error }: InputProps) => (
 // COMPONENT PROP TYPE
 interface Props {
   onSuccess: () => void
+  oldData: OriginalNFT
 }
 
-const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
+
+const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
+
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<IFormValues>()
+  } = useForm<IFormValues>({
+    defaultValues: {
+      'Full Name': oldData?.fullName || '',
+      'Discord Handle': oldData?.discordName || '',
+      Job: oldData?.job || '',
+      Introduction: oldData?.introduction || '',
+      'Profile Image': undefined,
+    }
+  })
   const toast = useToast()
 
   const [uri, setUri] = useState<string | undefined>()
@@ -96,7 +107,13 @@ const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
   const onSubmit: SubmitHandler<IFormValues> = async (data) => {
     setIsMinting(true)
     try {
-      await storeAsset(data)
+      console.log(discordName);
+      const dataWithDiscordId = {
+        ...data,
+        'Discord Handle': discordName || ""
+      }
+
+      await storeAsset(dataWithDiscordId, oldData?.tokenId)
     } catch (e) {
       console.error(`Minting failed! ${e}`)
       toast({
@@ -116,6 +133,21 @@ const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
     functionName: 'totalSupply',
   })
 
+  let contractSettings = {};
+
+  // const {
+  //   config,
+  //   error: prepareError,
+  //   isError: isPrepareError,
+  // } = usePrepareContractWrite({
+  //   address: nftConfig.originalAnoni.address as `0x${string}`,
+  //   abi: OriginalAnoni.abi,
+  //   functionName: 'mint',
+  //   args: [uri],
+  //   chainId: polygon.id,
+  //   enabled: Boolean(uri),
+  // })
+
   const {
     config,
     error: prepareError,
@@ -123,8 +155,8 @@ const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
   } = usePrepareContractWrite({
     address: nftConfig.originalAnoni.address as `0x${string}`,
     abi: OriginalAnoni.abi,
-    functionName: 'mint',
-    args: [uri],
+    functionName: 'updateMetadata',
+    args: [oldData.tokenId, uri],
     chainId: polygon.id,
     enabled: Boolean(uri),
   })
@@ -135,7 +167,7 @@ const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
     hash: data?.hash,
   })
 
-  async function storeAsset(formData: IFormValues) {
+  async function storeAsset(formData: IFormValues, defaultTokenId?: string) {
     if (!STORAGE_API_KEY) {
       console.error('Required API Key has not been provided.')
       throw Error('This method cannot be executed.')
@@ -146,6 +178,8 @@ const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
     })
 
     const { data: nftTotalSupply } = await refetch()
+    const tokenId = defaultTokenId ?? String(Number(nftTotalSupply) + 1)
+
     const encryptedInformation = await Lit.encryptObject(
       nftName,
       {
@@ -154,21 +188,21 @@ const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
         job: formData['Job'],
         introduction: formData['Introduction'],
       },
-      String(Number(nftTotalSupply) + 1)
+      tokenId
     )
 
     const { encryptedFile, encryptedSymmetricKey: encryptedFileSymmetricKey } =
       await Lit.encryptFile(
         nftName,
         formData['Profile Image']?.[0],
-        String(Number(nftTotalSupply) + 1)
+        tokenId
       )
 
     // TODO: Encrypt image once we get getting NFT part done.
     const metadata = await client.store({
       name: nftName,
       description: nftDescription,
-      encryptedString: encryptedInformation?.encryptedString,
+      encryptedString: "encryptedInformation?.encryptedString",
       encryptedStringSymmetricKey: encryptedInformation?.encryptedSymmetricKey,
       image: defaultImage as File,
       encryptedImage: encryptedFile,
@@ -183,6 +217,8 @@ const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
     if (uri && write) {
       if (!isPrepareError) {
         try {
+          console.log(uri)
+          // TODO: uncomment
           write()
         } catch {
           console.error(`minting failed with error. Error: ${error}`)
@@ -214,16 +250,22 @@ const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
     loadDefaultImage()
   }, [])
 
-  window &&
-    window.addEventListener('storage', () => {
-      const localStorageName = localStorage.getItem('discordName')
-      console.log(localStorageName)
-      if (localStorageName == null) {
-        return
-      }
+  const getDiscordHandleFromLocalStorage = () => {
+    const localStorageName = localStorage.getItem('discordName')
+    console.log(localStorageName)
+    if (localStorageName == null) {
+      return
+    }
+    setDiscordName(localStorageName)
+  }
 
-      setDiscordName(localStorageName)
-    })
+  React.useEffect(() => {
+    window.addEventListener('storage', getDiscordHandleFromLocalStorage);
+
+    return () => {
+      window.removeEventListener('storage', getDiscordHandleFromLocalStorage);
+    };
+  }, []);
 
   return (
     <>
@@ -231,7 +273,7 @@ const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-y-2">
           <label className="flex flex-col">
-            Profile Image
+            ProfileImage
             <input
               type="file"
               className="bg-white"

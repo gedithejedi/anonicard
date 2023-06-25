@@ -14,13 +14,13 @@ import Modal from '~/components/Common/Modal'
 import useUserOwnedNfts from '~/hooks/useUserOwnedNfts'
 import AnoniForm from '~/components/AnoniForm'
 
-interface OriginalNFT {
+export interface OriginalNFT {
   tokenId: string
   profileImage?: Blob
   profileImageUrl?: string
   fullName: string
   discordName: string
-  job: number
+  job: string
   introduction: string
 }
 
@@ -111,7 +111,7 @@ const Original: React.FC<Props> = ({ nfts, loading, airstackFetch }) => {
       )}
       <Modal isOpen={isOpen} onClose={onClose}>
         <div className="py-5">
-          <OriginalForm onSuccess={onFormSucess} />
+          <OriginalForm onSuccess={onFormSucess} oldData={nfts[0]} />
         </div>
       </Modal>
       <Box classes="bg-beige" title="My Anoni">
