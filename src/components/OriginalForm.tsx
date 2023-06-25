@@ -69,18 +69,8 @@ interface Props {
   oldData: OriginalNFT
 }
 
-const urlToFile = async (url: string | undefined) => {
-  if (!url) return undefined;
-  let response = await fetch(url);
-  let data = await response.blob();
-  let metadata = {
-    type: 'image/bmp'
-  };
-  return new File([data], "nftImage.bmp", metadata);
-}
 
 const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
-  const [oldImageAsFile, setOldImageAsFile] = useState(urlToFile(oldData?.profileImage));
 
   const {
     register,
@@ -93,7 +83,7 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
       'Discord Handle': oldData?.discordName || '',
       Job: oldData?.job || '',
       Introduction: oldData?.introduction || '',
-      'Profile Image': oldImageAsFile,
+      'Profile Image': undefined,
     }
   })
   const toast = useToast()
