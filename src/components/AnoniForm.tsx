@@ -22,7 +22,7 @@ import nftConfig from '~/nftConfig.json'
 import Lit from '~/Lit'
 
 import { useToast } from '@chakra-ui/react'
-import IOriginalNft from '~/types'
+import { IOriginalNft } from '~/types'
 import Button from '~/components/Common/Button'
 import QrScanner from '~/components/Common/QrScanner'
 import Loader from '~/components/Common/Loader'
@@ -37,10 +37,10 @@ const nftDescription = 'This is Anoni card.'
 export interface IFormValues {
   // TODO: Image should have size limit (else converting blob to string will fail)
   'Wallet Address': string
-  'Profile Image': File[]
+  'Profile Image': File[] | Blob[] | undefined
   'Full Name': string
   'Discord Handle': string
-  Job: number
+  Job: string
   Introduction: string
   Occassion: string
   Memo: string
@@ -85,10 +85,10 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
     reset,
     formState: { errors },
   } = useForm<IFormValues>({
-    defaultValues: defaultNft,
+    defaultValues: { ...defaultNft },
   })
 
-  const [toAddress, setToAddress] = useState()
+  const [toAddress, setToAddress] = useState<string | undefined>()
   const [uris, setUris] = useState<string[] | undefined>()
   const [defaultImage, setDefaultImage] = useState<File>()
   const [isMinting, setIsMinting] = useState<boolean>(false)
@@ -116,8 +116,8 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
         ...data,
         ...defaultNft,
         'Profile Image': [
-          new File([defaultNft['Profile Image']], 'profile', {
-            type: defaultNft['Profile Image'].type,
+          new File([defaultNft['Profile Image']?.[0]!], 'profile', {
+            type: defaultNft['Profile Image']?.[0].type,
           }),
         ],
       }
@@ -265,7 +265,7 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccess])
 
-  const onReadQrCode = (data) => {
+  const onReadQrCode = (data: string) => {
     setToAddress(data)
   }
   return toAddress ? (

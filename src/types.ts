@@ -1,5 +1,8 @@
-import { IFormValues as IOriginalForm } from '~/components/OriginalForm'
-
-export interface IOriginalNft extends IOriginalForm {
+export interface IOriginalNft {
   'Wallet Address'?: string
+  'Profile Image': File[] | Blob[] | undefined
+  'Full Name': string
+  'Discord Handle': string
+  Job: string
+  Introduction: string
 }

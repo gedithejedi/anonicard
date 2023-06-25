@@ -100,7 +100,7 @@ const Original: React.FC<Props> = ({ nfts, loading, airstackFetch }) => {
               onSuccess={onSendClose}
               defaultNft={{
                 'Wallet Address': address,
-                'Profile Image': nfts[0].profileImage,
+                'Profile Image': [nfts[0].profileImage!],
                 'Full Name': nfts[0].fullName,
                 'Discord Handle': nfts[0].discordName,
                 Job: nfts[0].job,

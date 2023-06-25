@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import useUserOwnedNfts from '~/hooks/useUserOwnedNfts'
 import Original from '~/components/Anoni/Original'
 import Box from '~/components/Common/Box'
+import { OriginalNFT } from '~/components/Anoni/Original'
 
 export default function Home() {
   const { airstackFetch, nfts, loading } =

@@ -8,16 +8,17 @@ interface Props {
 const Scanner: React.FC<Props> = ({ onReadQrCode }) => {
   const scannerRef = useRef(null)
   const [isLoading, setIsLoading] = useState(true)
-  const qrScanner = useRef(null)
+  const qrScanner = useRef<Html5QrcodeScanner | null>(null)
 
-  function onScanSuccess(decodedText, decodedResult) {
+  function onScanSuccess(decodedText: any, decodedResult: any) {
     // handle the scanned code as you like, for example:
     console.log(`Code matched = ${decodedText}`, decodedResult)
     onReadQrCode(decodedText)
-    qrScanner.current.clear()
+
+    qrScanner.current?.clear()
   }
 
-  function onScanFailure(error) {
+  function onScanFailure(error: any) {
     console.warn(`Code scan error = ${error}`)
   }
   useEffect(() => {
@@ -33,7 +34,7 @@ const Scanner: React.FC<Props> = ({ onReadQrCode }) => {
 
   return (
     <div className="w-full h-full">
-      <div id="reader" width="600px"></div>
+      <div id="reader"></div>
     </div>
   )
 }
