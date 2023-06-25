@@ -69,7 +69,7 @@ interface Props {
   oldData: OriginalNFT
 }
 
-const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
+const OriginalFormMint: React.FC<Props> = ({ onSuccess, oldData }) => {
   const {
     register,
     handleSubmit,
@@ -250,6 +250,7 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
     <>
       {(isMinting || isLoading) && <Loader />}
       <form onSubmit={handleSubmit(onSubmit)}>
+        <h1 className='text-xl text-bold mb-8 text-center'>Mint an AnoniCard</h1>
         <div className="flex flex-col gap-y-2">
           <label className="flex flex-col">
             ProfileImage
@@ -340,4 +341,4 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
     </>
   )
 }
-export default OriginalForm
+export default OriginalFormMint

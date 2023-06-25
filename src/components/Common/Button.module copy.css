@@ -1,0 +1,17 @@
+.Input {
+  @apply font-bold bg-black text-white transition-shadow duration-300 py-2 px-4;
+  box-shadow: -5px 5px gray;
+}
+
+.Input:hover {
+  box-shadow: none;
+}
+
+.Input.Ghost {
+  @apply font-bold bg-white text-black;
+  box-shadow: -5px 5px black;
+}
+
+.Input.Ghost:hover {
+  box-shadow: none;
+}

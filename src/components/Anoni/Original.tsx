@@ -12,6 +12,7 @@ import Button from '~/components/Common/Button'
 import OriginalFormMint from '~/components/OriginalFormMint'
 import Modal from '~/components/Common/Modal'
 import AnoniForm from '~/components/AnoniForm'
+import OriginalFormEdit from '../OriginalFormEdit'
 
 export interface OriginalNFT {
   tokenId: string
@@ -111,7 +112,11 @@ const Original: React.FC<Props> = ({ nfts, loading, airstackFetch }) => {
       )}
       <Modal isOpen={isOpen} onClose={onClose}>
         <div className="py-5">
-          <OriginalFormMint onSuccess={onFormSucess} oldData={nfts[0]} />
+          {nfts[0]?.tokenId ?
+            <OriginalFormEdit onSuccess={onFormSucess} oldData={nfts[0]} />
+            :
+            <OriginalFormMint onSuccess={onFormSucess} oldData={nfts[0]} />
+          }
         </div>
       </Modal>
       <Box classes="bg-beige" title="My Anoni">
