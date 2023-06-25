@@ -7,6 +7,7 @@ import {
   FieldError,
 } from 'react-hook-form'
 import IOriginalNft from '~/types'
+import Button from '~/components/Common/Button'
 
 const STORAGE_API_KEY = process.env.NEXT_PUBLIC_STORAGE_API_KEY
 
@@ -95,6 +96,9 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
         </label>
         <Input label="Occassion" register={register} />
         <Input label="Memo" register={register} />
+        <div className="mt-4 flex flex-col">
+          <Button type="submit">submit</Button>
+        </div>
       </div>
     </form>
   )

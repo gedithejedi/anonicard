@@ -5,12 +5,14 @@ import { useDisclosure } from '@chakra-ui/react'
 
 import { CredentialType, IDKitWidget } from '@worldcoin/idkit'
 import type { ISuccessResult } from '@worldcoin/idkit'
+import { useAccount } from 'wagmi'
 
 import Box from '~/components/Common/Box'
 import Button from '~/components/Common/Button'
 import OriginalForm from '~/components/OriginalForm'
 import Modal from '~/components/Common/Modal'
 import useUserOwnedNfts from '~/hooks/useUserOwnedNfts'
+import AnoniForm from '~/components/AnoniForm'
 
 interface OriginalNFT {
   tokenId: string
@@ -40,6 +42,13 @@ interface Props {
 const Original: React.FC<Props> = ({ nfts, loading, airstackFetch }) => {
   const [error, setError] = useState<string | undefined>()
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const {
+    isOpen: isSendOpen,
+    onOpen: onSendOpen,
+    onClose: onSendClose,
+  } = useDisclosure()
+
+  const { address } = useAccount()
 
   const handleProof = async (result: ISuccessResult) => {
     const reqBody = {
@@ -83,6 +92,22 @@ const Original: React.FC<Props> = ({ nfts, loading, airstackFetch }) => {
 
   return (
     <>
+      {nfts?.[0] && (
+        <Modal isOpen={isSendOpen} onClose={onSendClose}>
+          <div className="py-5">
+            <AnoniForm
+              defaultNft={{
+                'Wallet Address': address,
+                'Profile Image': nfts[0].profileImage,
+                'Full Name': nfts[0].fullName,
+                'Discord Handle': nfts[0].discordName,
+                Job: nfts[0].job,
+                Introduction: nfts[0].introduction,
+              }}
+            />
+          </div>
+        </Modal>
+      )}
       <Modal isOpen={isOpen} onClose={onClose}>
         <div className="py-5">
           <OriginalForm onSuccess={onFormSucess} />
@@ -115,18 +140,18 @@ const Original: React.FC<Props> = ({ nfts, loading, airstackFetch }) => {
                 </tr>
               </tbody>
             </table>
-            <div className='flex justify-between mt-3'>
+            <div className="flex justify-between mt-3">
               <button
                 className="font-bold bg-black text-white transition-shadow duration-300 py-2 px-4 border-2 border-black hover:text-black hover:bg-white"
                 onClick={() => onSuccess()}
               >
-                Edit AnoniCard
+                Edit Anonicard
               </button>
               <button
-                className="font-bold bg-black text-white transition-shadow duration-300 py-2 px-4 border-2 border-green hover:text-green hover:bg-white"
-                onClick={() => console.log("send")}
+                className="font-bold bg-yellow-400 text-white transition-shadow duration-300 py-2 px-4 border-2 border-yellow-400 hover:text-black hover:bg-white"
+                onClick={() => onSendOpen()}
               >
-                Send AnoniCard
+                Send Anonicard
               </button>
             </div>
           </>
