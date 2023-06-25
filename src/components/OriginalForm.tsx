@@ -36,11 +36,11 @@ const nftDescription =
 // FORM TYPES
 interface IFormValues {
   // TODO: Image should have size limit (else converting blob to string will fail)
-  'Profile Image': File[]
-  'Full Name': string
-  'Discord Handle': string
-  Job: string
-  Introduction: string
+  'Profile Image': File | undefined;
+  'Full Name': string;
+  'Discord Handle': string;
+  Job: string;
+  Introduction: string;
 }
 
 type InputProps = {
@@ -69,15 +69,18 @@ interface Props {
   oldData: OriginalNFT
 }
 
+const urlToFile = async (url: string | undefined) => {
+  if (!url) return undefined;
+  let response = await fetch(url);
+  let data = await response.blob();
+  let metadata = {
+    type: 'image/bmp'
+  };
+  return new File([data], "nftImage.bmp", metadata);
+}
+
 const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
-  const urlToFile = async (url: string) => {
-    let response = await fetch(url);
-    let data = await response.blob();
-    let metadata = {
-      type: 'image/bmp'
-    };
-    return await new File([data], "nftImage.bmp", metadata)
-  }
+  const [oldImageAsFile, setOldImageAsFile] = useState(await urlToFile(oldData?.profileImage));
 
   const {
     register,
@@ -90,7 +93,7 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
       'Discord Handle': oldData?.discordName || '',
       Job: oldData?.job || '',
       Introduction: oldData?.introduction || '',
-      'Profile Image': oldData?.profileImage ? async () => await urlToFile(oldData.profileImage) : undefined,
+      'Profile Image': oldImageAsFile,
     }
   })
   const toast = useToast()
