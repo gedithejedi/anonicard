@@ -25,7 +25,6 @@ import { useToast } from '@chakra-ui/react'
 import Button from '~/components/Common/Button'
 import Loader from '~/components/Common/Loader'
 import { OriginalNFT } from '~/components/Anoni/Original'
-import * as LitJsSdk from '@lit-protocol/lit-node-client'
 
 const STORAGE_API_KEY = process.env.NEXT_PUBLIC_STORAGE_API_KEY
 
@@ -70,12 +69,11 @@ interface Props {
   oldData: OriginalNFT
 }
 
-const OriginalFormEdit: React.FC<Props> = ({ onSuccess, oldData }) => {
+const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
   const {
     register,
     handleSubmit,
     reset,
-    setValue,
     formState: { errors },
   } = useForm<IFormValues>({
     defaultValues: {
@@ -90,28 +88,24 @@ const OriginalFormEdit: React.FC<Props> = ({ onSuccess, oldData }) => {
 
   const [uri, setUri] = useState<string | undefined>()
   const [defaultImage, setDefaultImage] = useState<File>()
-  const [blobImage, setBlobImage] = useState("")
   const [isMinting, setIsMinting] = useState<boolean>(false)
   const [discordName, setDiscordName] = useState('')
 
-
-  const getNounsImage = async () => {
-    const res = await fetch('https://api.cloudnouns.com/v1/pfp')
+  // TODO: replace it with Nouns image
+  const loadDefaultImage = async () => {
+    const res = await fetch('/CAT.jpg')
     if (!res.ok) {
-      console.log(res.text());
       throw new Error('Failed to fetch data')
     }
-
-    const file = new File([await res.blob()], 'nounVatar.jpg', { type: 'image/svg' })
-    setValue('Profile Image', [file])
-    const blobtoBase64 = await LitJsSdk.blobToBase64String(file);
-    setBlobImage(blobtoBase64);
+    setDefaultImage(
+      new File([await res.blob()], 'defaultImage.jpg', { type: 'image/jpeg' })
+    )
   }
-
 
   const onSubmit: SubmitHandler<IFormValues> = async (data) => {
     setIsMinting(true)
     try {
+      console.log(discordName)
       const dataWithDiscordId = {
         ...data,
         'Discord Handle': discordName || '',
@@ -136,6 +130,21 @@ const OriginalFormEdit: React.FC<Props> = ({ onSuccess, oldData }) => {
     abi: OriginalAnoni.abi,
     functionName: 'totalSupply',
   })
+
+  let contractSettings = {}
+
+  // const {
+  //   config,
+  //   error: prepareError,
+  //   isError: isPrepareError,
+  // } = usePrepareContractWrite({
+  //   address: nftConfig.originalAnoni.address as `0x${string}`,
+  //   abi: OriginalAnoni.abi,
+  //   functionName: 'mint',
+  //   args: [uri],
+  //   chainId: polygon.id,
+  //   enabled: Boolean(uri),
+  // })
 
   const {
     config,
@@ -192,7 +201,7 @@ const OriginalFormEdit: React.FC<Props> = ({ onSuccess, oldData }) => {
       encryptedImage: encryptedFile,
       encryptedFileSymmetricKey,
     })
-    console.log(metadata);
+
     setUri(metadata.url)
     console.log('Metadata stored on Filecoin and IPFS with URL:', metadata.url)
   }
@@ -230,11 +239,12 @@ const OriginalFormEdit: React.FC<Props> = ({ onSuccess, oldData }) => {
   }, [isSuccess])
 
   useEffect(() => {
-    getNounsImage()
+    loadDefaultImage()
   }, [])
 
   const getDiscordHandleFromLocalStorage = () => {
     const localStorageName = localStorage.getItem('discordName')
+    console.log(localStorageName)
     if (localStorageName == null) {
       return
     }
@@ -253,24 +263,15 @@ const OriginalFormEdit: React.FC<Props> = ({ onSuccess, oldData }) => {
     <>
       {(isMinting || isLoading) && <Loader />}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <h1 className='text-xl text-bold mb-8 text-center'>Edit an AnoniCard</h1>
         <div className="flex flex-col gap-y-2">
           <label className="flex flex-col">
             ProfileImage
-            <div className='flex flex-col'>
-              {defaultImage && <img src={`data:image/jpeg;base64,${blobImage}`} alt='noun image' />}
-              <p className='w-full flex gap-2'>
-                1 file, {defaultImage?.name && defaultImage.name} uploaded
-              </p>
-              <div className='flex gap-4 my-4 w-full'>
-                <Button
-                  onClick={() => getNounsImage()}
-                  type={'button'}
-                >
-                  Get Nouns Picture
-                </Button>
-              </div>
-            </div>
+            <input
+              type="file"
+              className="bg-white"
+              accept="image/png, image/jpeg, image/jpg"
+              {...register('Profile Image', { required: true })}
+            />
             {errors['Profile Image'] && (
               <span className="SubText text-red-500">
                 This field is required
@@ -352,4 +353,4 @@ const OriginalFormEdit: React.FC<Props> = ({ onSuccess, oldData }) => {
     </>
   )
 }
-export default OriginalFormEdit
+export default OriginalForm

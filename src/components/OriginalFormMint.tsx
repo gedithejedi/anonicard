@@ -177,7 +177,6 @@ const OriginalFormMint: React.FC<Props> = ({ onSuccess, oldData }) => {
     const { encryptedFile, encryptedSymmetricKey: encryptedFileSymmetricKey } =
       await Lit.encryptFile(nftName, formData['Profile Image']?.[0], tokenId)
 
-    // TODO: Encrypt image once we get getting NFT part done.
     const metadata = await client.store({
       name: nftName,
       description: nftDescription,
@@ -197,7 +196,6 @@ const OriginalFormMint: React.FC<Props> = ({ onSuccess, oldData }) => {
       if (!isPrepareError) {
         try {
           console.log(uri)
-          // TODO: uncomment
           write()
         } catch {
           console.error(`minting failed with error. Error: ${error}`)
