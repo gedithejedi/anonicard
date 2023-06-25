@@ -9,17 +9,16 @@ import {
 } from '@rainbow-me/rainbowkit'
 import { configureChains, createConfig, WagmiConfig, useAccount } from 'wagmi'
 import { polygon } from '@wagmi/chains'
-import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 
 import { Roboto_Mono } from 'next/font/google'
 import type { AppProps } from 'next/app'
 import Layout from '~/components/Layout'
-import CustomAvatar from '~/components/CustomAvatar';
-import { init } from "@airstack/airstack-react";
+import CustomAvatar from '~/components/CustomAvatar'
+import { init } from '@airstack/airstack-react'
 
-init("9c5c71ed48a24e52a1dcb9b3c3195440");
+init('9c5c71ed48a24e52a1dcb9b3c3195440')
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [polygon],
@@ -64,15 +63,15 @@ export default function App({ Component, pageProps }: AppProps) {
 
   const rainbowkitTheme = isConnected
     ? midnightTheme({
-      accentColor: '#000',
-      accentColorForeground: 'white',
-      borderRadius: 'small',
-      overlayBlur: 'small',
-    })
+        accentColor: '#000',
+        accentColorForeground: 'white',
+        borderRadius: 'small',
+        overlayBlur: 'small',
+      })
     : lightTheme({
-      accentColor: '#fff',
-      accentColorForeground: 'black',
-    })
+        accentColor: '#fff',
+        accentColorForeground: 'black',
+      })
 
   return (
     <WagmiConfig config={wagmiConfig}>
