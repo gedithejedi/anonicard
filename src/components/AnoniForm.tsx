@@ -42,7 +42,7 @@ export interface IFormValues {
   'Discord Handle': string
   Job: string
   Introduction: string
-  Occassion: string
+  Occasion: string
   Memo: string
 }
 
@@ -89,7 +89,7 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
   })
 
   const [toAddress, setToAddress] = useState<string | undefined>()
-  const [uris, setUris] = useState<string[] | undefined>()
+  const [uri, setUri] = useState<string | undefined>()
   const [defaultImage, setDefaultImage] = useState<File>()
   const [isMinting, setIsMinting] = useState<boolean>(false)
   const toast = useToast()
@@ -150,9 +150,9 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
     address: nftConfig.anonicard.address as `0x${string}`,
     abi: Anonicard.abi,
     functionName: 'mint',
-    args: [toAddress, uris?.[0], uris?.[1]],
+    args: [toAddress, uri],
     chainId: polygon.id,
-    enabled: Boolean(uris),
+    enabled: Boolean(uri),
   })
 
   const { data, error, isError, write } = useContractWrite(config)
@@ -171,7 +171,7 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
     })
 
     const { data: nftTotalSupply } = await refetch()
-    const cardInfoEncryptedInformation = await Lit.encryptObject(
+    const encryptedInformation = await Lit.encryptObject(
       nftName,
       {
         walletAddress: formData['Wallet Address'],
@@ -179,6 +179,8 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
         discordName: formData['Discord Handle'],
         job: formData['Job'],
         introduction: formData['Introduction'],
+        occasion: formData['Occasion'],
+        memo: formData['Memo'],
       },
       String(Number(nftTotalSupply) + 1)
     )
@@ -190,51 +192,23 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
         String(Number(nftTotalSupply) + 1)
       )
 
-    const cardInfoMetadata = await client.store({
+    const metadata = await client.store({
       name: nftName,
       description: nftDescription,
       image: defaultImage as File,
 
-      encryptedString: cardInfoEncryptedInformation?.encryptedString,
-      encryptedStringSymmetricKey:
-        cardInfoEncryptedInformation?.encryptedSymmetricKey,
+      encryptedString: encryptedInformation?.encryptedString,
+      encryptedStringSymmetricKey: encryptedInformation?.encryptedSymmetricKey,
       encryptedImage: encryptedFile,
       encryptedFileSymmetricKey,
     })
-    console.log(
-      'CardInfoMetadata stored on Filecoin and IPFS with URL:',
-      cardInfoMetadata.url
-    )
+    console.log('Metadata stored on Filecoin and IPFS with URL:', metadata.url)
 
-    const customFieldsInformation = await Lit.encryptObject(
-      nftName,
-      {
-        occassion: formData['Occassion'],
-        memo: formData['Memo'],
-      },
-      String(Number(nftTotalSupply) + 1)
-    )
-
-    const customFieldsMetadata = await client.store({
-      name: nftName,
-      description: nftDescription,
-      image: defaultImage as File,
-
-      encryptedString: cardInfoEncryptedInformation?.encryptedString,
-      encryptedStringSymmetricKey:
-        cardInfoEncryptedInformation?.encryptedSymmetricKey,
-    })
-
-    console.log(
-      'CustomFieldsMetadata stored on Filecoin and IPFS with URL:',
-      customFieldsMetadata.url
-    )
-
-    setUris([cardInfoMetadata.url, customFieldsMetadata.url])
+    setUri(metadata.url)
   }
 
   useEffect(() => {
-    if (uris && write) {
+    if (uri && write) {
       if (!isPrepareError) {
         try {
           write()
@@ -242,14 +216,14 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
         } catch {
           console.error(`minting failed with error. Error: ${error}`)
         } finally {
-          setUris(undefined)
+          setUri(undefined)
           setIsMinting(false)
         }
       } else {
         console.error(`NFT cannot be minted ${prepareError}`)
       }
     }
-  }, [uris, write, data])
+  }, [uri, write, data])
 
   useEffect(() => {
     if (isSuccess) {
@@ -292,7 +266,7 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
             Introduction
             <textarea {...register('Introduction')} disabled={true} />
           </label>
-          <Input label="Occassion" register={register} />
+          <Input label="Occasion" register={register} />
           <Input label="Memo" register={register} />
           <div className="mt-4 flex flex-col">
             <Button type="submit">submit</Button>
