@@ -47,11 +47,11 @@ const Anony: React.FC<Props> = () => {
 
   return (
     <>
-      <Box classes="bg-beige" title="My Anoni">
+      <div>
         {loading ? (
           'Loading ... '
         ) : nfts.length ? (
-          <>
+          <div className="border-2 border-black p-2 flex flex-col items-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={nfts[0].profileImageUrl} alt="profile" />
             <table>
@@ -82,7 +82,7 @@ const Anony: React.FC<Props> = () => {
                 </tr>
               </tbody>
             </table>
-            <div className="flex justify-between mt-3">
+            <div className="flex justify-start w-full mt-3">
               <button
                 className="font-bold bg-black text-white transition-shadow duration-300 py-2 px-4 border-2 border-black hover:text-black hover:bg-white"
                 onClick={() => console.log('annoicard')}
@@ -90,7 +90,7 @@ const Anony: React.FC<Props> = () => {
                 Edit Anonicard
               </button>
             </div>
-          </>
+          </div>
         ) : (
           <>
             <p className="mb-10">
@@ -99,7 +99,7 @@ const Anony: React.FC<Props> = () => {
             </p>
           </>
         )}
-      </Box>
+      </div>
     </>
   )
 }
