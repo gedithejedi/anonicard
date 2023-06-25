@@ -89,7 +89,7 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
   })
 
   const [toAddress, setToAddress] = useState<string | undefined>()
-  const [uri, setUri] = useState<string[] | undefined>()
+  const [uri, setUri] = useState<string | undefined>()
   const [defaultImage, setDefaultImage] = useState<File>()
   const [isMinting, setIsMinting] = useState<boolean>(false)
   const toast = useToast()

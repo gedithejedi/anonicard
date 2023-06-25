@@ -21,7 +21,7 @@ export interface AnoniNFT {
   memo: string
 }
 
-const Anony: React.FC<Props> = () => {
+const Anony: React.FC = () => {
   const [error, setError] = useState<string | undefined>()
   const { isOpen, onOpen, onClose } = useDisclosure()
 
