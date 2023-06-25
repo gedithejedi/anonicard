@@ -10,6 +10,8 @@ import { useAccount } from 'wagmi'
 import Box from '~/components/Common/Box'
 import Button from '~/components/Common/Button'
 import OriginalFormMint from '~/components/OriginalFormMint'
+import OriginalFormEdit from '~/components/OriginalFormEdit'
+
 import Modal from '~/components/Common/Modal'
 import AnoniFormMint from '~/components/AnoniFormMint'
 
