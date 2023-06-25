@@ -23,19 +23,21 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <Providers>
         <Modal isOpen={isOpen} onClose={onClose}>
           <div className="flex py-5 gap-x-4 items-center">
-            <Canvas
-              text={address}
-              options={{
-                level: 'L',
-                margin: 1,
-                scale: 5,
-                width: 150,
-                color: {
-                  dark: '#fff',
-                  light: '#000',
-                },
-              }}
-            />
+            {address && (
+              <Canvas
+                text={address}
+                options={{
+                  level: 'L',
+                  margin: 1,
+                  scale: 5,
+                  width: 150,
+                  color: {
+                    dark: '#fff',
+                    light: '#000',
+                  },
+                }}
+              />
+            )}
             <span>
               Let your frens scan your wallet QRcode and start to connect!
             </span>
@@ -57,7 +59,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 viewBox="0 0 24 24"
                 stroke-width="1.5"
                 stroke="currentColor"
-                class="w-6 h-6"
+                className="w-6 h-6"
               >
                 <path
                   stroke-linecap="round"
