@@ -123,14 +123,6 @@ const Original: React.FC = () => {
                 </tr>
               </tbody>
             </table>
-            <div className='flex justify-end mt-3'>
-              <button
-                className="font-bold bg-black text-white transition-shadow duration-300 py-2 px-4 border-2 border-black hover:text-black hover:bg-white"
-                onClick={() => onSuccess()}
-              >
-                Edit AnoniCard
-              </button>
-            </div>
             <div className='flex justify-between mt-3'>
               <button
                 className="font-bold bg-black text-white transition-shadow duration-300 py-2 px-4 border-2 border-black hover:text-black hover:bg-white"
