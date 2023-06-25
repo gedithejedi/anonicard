@@ -69,7 +69,7 @@ interface Props {
   oldData: OriginalNFT
 }
 
-const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
+const OriginalFormMint: React.FC<Props> = ({ onSuccess, oldData }) => {
   const {
     register,
     handleSubmit,
@@ -130,21 +130,6 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
     abi: OriginalAnoni.abi,
     functionName: 'totalSupply',
   })
-
-  let contractSettings = {}
-
-  // const {
-  //   config,
-  //   error: prepareError,
-  //   isError: isPrepareError,
-  // } = usePrepareContractWrite({
-  //   address: nftConfig.originalAnoni.address as `0x${string}`,
-  //   abi: OriginalAnoni.abi,
-  //   functionName: 'mint',
-  //   args: [uri],
-  //   chainId: polygon.id,
-  //   enabled: Boolean(uri),
-  // })
 
   const {
     config,
@@ -355,4 +340,4 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
     </>
   )
 }
-export default OriginalForm
+export default OriginalFormMint
