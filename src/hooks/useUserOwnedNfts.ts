@@ -18,8 +18,8 @@ export default <T>(nftName: 'originalAnoni' | 'anonicard') => {
     {}
   )
 
+  console.log(data)
   const getDecryptedValue = async () => {
-    console.log(data)
     if (!data?.TokenBalances?.TokenBalance) {
       return
     }

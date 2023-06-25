@@ -73,7 +73,6 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
   const urlToFile = async (url: string) => {
     let response = await fetch(url);
     let data = await response.blob();
-    console.log(oldData?.profileImage);
     let metadata = {
       type: 'image/bmp'
     };
@@ -120,8 +119,8 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
         ...data,
         'Discord Handle': discordName || ""
       }
-      console.log(data);
-      // await storeAsset(data)
+
+      await storeAsset(dataWithDiscordId, oldData?.tokenId)
     } catch (e) {
       console.error(`Minting failed! ${e}`)
       toast({
@@ -141,6 +140,21 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
     functionName: 'totalSupply',
   })
 
+  let contractSettings = {};
+
+  // const {
+  //   config,
+  //   error: prepareError,
+  //   isError: isPrepareError,
+  // } = usePrepareContractWrite({
+  //   address: nftConfig.originalAnoni.address as `0x${string}`,
+  //   abi: OriginalAnoni.abi,
+  //   functionName: 'mint',
+  //   args: [uri],
+  //   chainId: polygon.id,
+  //   enabled: Boolean(uri),
+  // })
+
   const {
     config,
     error: prepareError,
@@ -148,8 +162,8 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
   } = usePrepareContractWrite({
     address: nftConfig.originalAnoni.address as `0x${string}`,
     abi: OriginalAnoni.abi,
-    functionName: 'mint',
-    args: [uri],
+    functionName: 'updateMetadata',
+    args: [oldData.tokenId, uri],
     chainId: polygon.id,
     enabled: Boolean(uri),
   })
@@ -176,7 +190,7 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
     const encryptedInformation = await Lit.encryptObject(
       nftName,
       {
-        'full Name': formData['Full Name'],
+        fullName: formData['Full Name'],
         discordName: formData['Discord Handle'],
         job: formData['Job'],
         introduction: formData['Introduction'],
@@ -195,7 +209,7 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
     const metadata = await client.store({
       name: nftName,
       description: nftDescription,
-      encryptedString: encryptedInformation?.encryptedString,
+      encryptedString: "encryptedInformation?.encryptedString",
       encryptedStringSymmetricKey: encryptedInformation?.encryptedSymmetricKey,
       image: defaultImage as File,
       encryptedImage: encryptedFile,
@@ -210,6 +224,8 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
     if (uri && write) {
       if (!isPrepareError) {
         try {
+          console.log(uri)
+          // TODO: uncomment
           write()
         } catch {
           console.error(`minting failed with error. Error: ${error}`)
@@ -247,7 +263,6 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
     if (localStorageName == null) {
       return
     }
-    console.log("in the memo");
     setDiscordName(localStorageName)
   }
 
