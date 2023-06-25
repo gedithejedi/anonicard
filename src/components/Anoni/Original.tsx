@@ -3,7 +3,6 @@ import React from 'react'
 import { useDisclosure } from '@chakra-ui/react'
 // import dynamic from 'next/dynamic'
 
-import { useAccount } from 'wagmi'
 import { CredentialType, IDKitWidget } from '@worldcoin/idkit'
 import type { ISuccessResult } from '@worldcoin/idkit'
 
@@ -32,20 +31,15 @@ if (!WORLDCOIN_ID) {
   throw new Error('Wordcoin ID is required!')
 }
 
-const Original: React.FC = () => {
-  const { address } = useAccount()
+interface Props {
+  nfts: OriginalNFT[]
+  loading: boolean
+  airstackFetch: () => void
+}
+
+const Original: React.FC<Props> = ({ nfts, loading, airstackFetch }) => {
   const [error, setError] = useState<string | undefined>()
   const { isOpen, onOpen, onClose } = useDisclosure()
-
-  const {
-    airstackFetch,
-    nfts,
-    loading
-  } = useUserOwnedNfts<OriginalNFT>('originalAnoni')
-
-  useEffect(() => {
-    airstackFetch()
-  }, [])
 
   const handleProof = async (result: ISuccessResult) => {
     const reqBody = {
