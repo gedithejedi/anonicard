@@ -163,6 +163,11 @@
     {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        },
+        {
           "internalType": "string",
           "name": "cardInfoURI",
           "type": "string"
