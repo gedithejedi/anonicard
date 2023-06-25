@@ -11,8 +11,7 @@ import Box from '~/components/Common/Box'
 import Button from '~/components/Common/Button'
 import OriginalFormMint from '~/components/OriginalFormMint'
 import Modal from '~/components/Common/Modal'
-import AnoniForm from '~/components/AnoniForm'
-import OriginalFormEdit from '../OriginalFormEdit'
+import AnoniFormMint from '~/components/AnoniFormMint'
 
 export interface OriginalNFT {
   tokenId: string
@@ -96,7 +95,7 @@ const Original: React.FC<Props> = ({ nfts, loading, airstackFetch }) => {
       {nfts?.[0] && (
         <Modal isOpen={isSendOpen} onClose={onSendClose}>
           <div className="py-5">
-            <AnoniForm
+            <AnoniFormMint
               onSuccess={onSendClose}
               defaultNft={{
                 'Wallet Address': address,
