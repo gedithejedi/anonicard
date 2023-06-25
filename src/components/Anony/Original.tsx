@@ -18,7 +18,7 @@ export interface OriginalNFT {
   profileImage?: string
   fullName: string
   discordName: string
-  job: number
+  job: string
   introduction: string
 }
 
@@ -46,8 +46,6 @@ const Original: React.FC = () => {
   useEffect(() => {
     airstackFetch()
   }, [])
-
-  console.log("reloads");
 
   const handleProof = async (result: ISuccessResult) => {
     const reqBody = {

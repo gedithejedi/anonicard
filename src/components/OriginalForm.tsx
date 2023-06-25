@@ -36,10 +36,10 @@ const nftDescription =
 // FORM TYPES
 interface IFormValues {
   // TODO: Image should have size limit (else converting blob to string will fail)
-  'ProfileImage': File[]
-  'FullName': string
-  'DiscordHandle': string
-  Job: number
+  'Profile Image': File[]
+  'Full Name': string
+  'Discord Handle': string
+  Job: string
   Introduction: string
 }
 
@@ -70,12 +70,30 @@ interface Props {
 }
 
 const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
+  const urlToFile = async (url: string) => {
+    let response = await fetch(url);
+    let data = await response.blob();
+    console.log(oldData?.profileImage);
+    let metadata = {
+      type: 'image/bmp'
+    };
+    return await new File([data], "nftImage.bmp", metadata)
+  }
+
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<IFormValues>()
+  } = useForm<IFormValues>({
+    defaultValues: {
+      'Full Name': oldData?.fullName || '',
+      'Discord Handle': oldData?.discordName || '',
+      Job: oldData?.job || '',
+      Introduction: oldData?.introduction || '',
+      'Profile Image': oldData?.profileImage ? async () => await urlToFile(oldData.profileImage) : undefined,
+    }
+  })
   const toast = useToast()
 
   const [uri, setUri] = useState<string | undefined>()
@@ -97,11 +115,13 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
   const onSubmit: SubmitHandler<IFormValues> = async (data) => {
     setIsMinting(true)
     try {
+      console.log(discordName);
       const dataWithDiscordId = {
         ...data,
-        DiscordHandle: discordName || ""
+        'Discord Handle': discordName || ""
       }
-      await storeAsset(data)
+      console.log(data);
+      // await storeAsset(data)
     } catch (e) {
       console.error(`Minting failed! ${e}`)
       toast({
@@ -140,27 +160,6 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
     hash: data?.hash,
   })
 
-
-  // const {
-  //   config,
-  //   error: prepareError,
-  //   isError: isPrepareError,
-  // } = usePrepareContractWrite({
-  //   address: nftConfig.originalAnoni.address as `0x${string}`,
-  //   abi: OriginalAnoni.abi,
-  //   functionName: 'mint',
-  //   args: [uri],
-  //   chainId: polygon.id,
-  //   enabled: Boolean(uri),
-  // })
-
-  // const { data, error, isError, write } = useContractWrite(config)
-
-  // const { isLoading, isSuccess } = useWaitForTransaction({
-  //   hash: data?.hash,
-  // })
-
-
   async function storeAsset(formData: IFormValues, defaultTokenId?: string) {
     if (!STORAGE_API_KEY) {
       console.error('Required API Key has not been provided.')
@@ -177,8 +176,8 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
     const encryptedInformation = await Lit.encryptObject(
       nftName,
       {
-        fullName: formData['FullName'],
-        discordName: formData['DiscordHandle'],
+        'full Name': formData['Full Name'],
+        discordName: formData['Discord Handle'],
         job: formData['Job'],
         introduction: formData['Introduction'],
       },
@@ -188,7 +187,7 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
     const { encryptedFile, encryptedSymmetricKey: encryptedFileSymmetricKey } =
       await Lit.encryptFile(
         nftName,
-        formData['ProfileImage']?.[0],
+        formData['Profile Image']?.[0],
         tokenId
       )
 
@@ -260,16 +259,6 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
     };
   }, []);
 
-
-  useMemo(() => {
-    useForm({
-      defaultValues: {
-        FullName: '',
-        DiscordHandle: ''
-      }
-    })
-  }, [oldData])
-
   return (
     <>
       {isMinting && <Loader />}
@@ -281,28 +270,28 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
               type="file"
               className="bg-white"
               accept="image/png, image/jpeg, image/jpg"
-              {...register('ProfileImage', { required: true })}
+              {...register('Profile Image', { required: true })}
             />
-            {errors['ProfileImage'] && (
+            {errors['Profile Image'] && (
               <span className="SubText text-red-500">
                 This field is required
               </span>
             )}
           </label>
           <Input
-            label="FullName"
+            label="Full Name"
             register={register}
-            error={errors['FullName']}
+            error={errors['Full Name']}
             required
           />
           {discordName !== '' ? (
             <div className="relative">
               <label className="flex flex-col">
-                DiscordHandle
+                Discord Handle
                 <input
                   disabled={true}
                   value={discordName}
-                  {...(register('DiscordHandle'), { required: true })}
+                  {...(register('Discord Handle'), { required: true })}
                 />
                 <a
                   target="_blank"
@@ -331,7 +320,7 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
             </div>
           ) : (
             <>
-              <label>{'DiscordHandle'}</label>
+              <label>{'Discord Handle'}</label>
               <a
                 className="bg-discord text-white text-l max-w-[220px] py-2 rounded-md font-bold flex justify-center items-center space-x-4 hover:bg-gray-600 transition duration-75"
                 target="_blank"
@@ -345,7 +334,7 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
               </a>
             </>
           )}
-          {errors['DiscordHandle'] && (
+          {errors['Discord Handle'] && (
             <span className="SubText text-red-500">This field is required</span>
           )}
           <Input
