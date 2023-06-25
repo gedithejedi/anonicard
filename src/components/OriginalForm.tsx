@@ -80,7 +80,7 @@ const urlToFile = async (url: string | undefined) => {
 }
 
 const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
-  const [oldImageAsFile, setOldImageAsFile] = useState(await urlToFile(oldData?.profileImage));
+  const [oldImageAsFile, setOldImageAsFile] = useState(urlToFile(oldData?.profileImage));
 
   const {
     register,
