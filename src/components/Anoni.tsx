@@ -43,6 +43,7 @@ const Anony: React.FC<Props> = () => {
     onClose()
     airstackFetch()
   }
+  console.log(nfts[0])
 
   return (
     <>

@@ -42,7 +42,7 @@ export interface IFormValues {
   'Discord Handle': string
   Job: string
   Introduction: string
-  Occassion: string
+  Occasion: string
   Memo: string
 }
 
@@ -179,7 +179,7 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
         discordName: formData['Discord Handle'],
         job: formData['Job'],
         introduction: formData['Introduction'],
-        occassion: formData['Occassion'],
+        occasion: formData['Occasion'],
         memo: formData['Memo'],
       },
       String(Number(nftTotalSupply) + 1)
@@ -266,7 +266,7 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
             Introduction
             <textarea {...register('Introduction')} disabled={true} />
           </label>
-          <Input label="Occassion" register={register} />
+          <Input label="Occasion" register={register} />
           <Input label="Memo" register={register} />
           <div className="mt-4 flex flex-col">
             <Button type="submit">submit</Button>
