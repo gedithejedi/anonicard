@@ -156,7 +156,7 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
     address: nftConfig.originalAnoni.address as `0x${string}`,
     abi: OriginalAnoni.abi,
     functionName: 'updateMetadata',
-    args: [oldData.tokenId, uri],
+    args: [oldData?.tokenId, uri],
     chainId: polygon.id,
     enabled: Boolean(uri),
   })
