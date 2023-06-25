@@ -11,7 +11,6 @@ import Box from '~/components/Common/Box'
 import Button from '~/components/Common/Button'
 import OriginalForm from '~/components/OriginalForm'
 import Modal from '~/components/Common/Modal'
-import useUserOwnedNfts from '~/hooks/useUserOwnedNfts'
 import AnoniForm from '~/components/AnoniForm'
 
 export interface OriginalNFT {

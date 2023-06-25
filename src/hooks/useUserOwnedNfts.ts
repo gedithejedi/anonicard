@@ -14,11 +14,10 @@ export default <T>(nftName: 'originalAnoni' | 'anonicard') => {
   const { address } = useAccount()
 
   const [airstackFetch, { data, loading, error: airstackErr }] = useLazyQuery(
-    query('originalAnoni', address!),
+    query(nftName, address!),
     {}
   )
 
-  console.log(data)
   const getDecryptedValue = async () => {
     if (!data?.TokenBalances?.TokenBalance) {
       return
@@ -34,6 +33,7 @@ export default <T>(nftName: 'originalAnoni' | 'anonicard') => {
           'ipfs://',
           'https://ipfs.io/ipfs/'
         )
+
         const res = await fetch(ipfsURI)
         const encryptedMetadata = await res.json()
 
@@ -42,7 +42,7 @@ export default <T>(nftName: 'originalAnoni' | 'anonicard') => {
           encryptedMetadata?.encryptedStringSymmetricKey
         ) {
           metadata = await Lit.decryptText(
-            'originalAnoni',
+            nftName,
             encryptedMetadata.encryptedString,
             encryptedMetadata.encryptedStringSymmetricKey,
             token.tokenNfts.tokenId
@@ -54,7 +54,7 @@ export default <T>(nftName: 'originalAnoni' | 'anonicard') => {
           encryptedMetadata?.encryptedFileSymmetricKey
         ) {
           const profileImage = await Lit.decryptFile(
-            'originalAnoni',
+            nftName,
             encryptedMetadata?.encryptedImage,
             encryptedMetadata?.encryptedFileSymmetricKey,
             token.tokenNfts.tokenId
