@@ -29,6 +29,7 @@ if (!projectId) {
   throw new Error('projectId is requried!')
 }
 const WALLET_ID = process.env.NEXT_PUBLIC_WALLET_ID
+
 if (!WALLET_ID) {
   throw new Error('Wallet ID is required!')
 }
