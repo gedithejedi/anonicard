@@ -77,7 +77,7 @@ const Original: React.FC = () => {
     })
   }
 
-  const onSuccess = (result: ISuccessResult) => {
+  const onSuccess = () => {
     setError(undefined)
     onOpen()
   }
@@ -121,6 +121,20 @@ const Original: React.FC = () => {
                 </tr>
               </tbody>
             </table>
+            <div className='flex justify-between mt-3'>
+              <button
+                className="font-bold bg-black text-white transition-shadow duration-300 py-2 px-4 border-2 border-black hover:text-black hover:bg-white"
+                onClick={() => onSuccess()}
+              >
+                Edit AnoniCard
+              </button>
+              <button
+                className="font-bold bg-black text-white transition-shadow duration-300 py-2 px-4 border-2 border-green hover:text-green hover:bg-white"
+                onClick={() => console.log("send")}
+              >
+                Send AnoniCard
+              </button>
+            </div>
           </>
         ) : (
           <>
