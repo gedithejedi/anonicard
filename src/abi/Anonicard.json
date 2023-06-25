@@ -169,12 +169,7 @@
         },
         {
           "internalType": "string",
-          "name": "cardInfoURI",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "customFieldsURI",
+          "name": "tokenURI",
           "type": "string"
         }
       ],
@@ -386,11 +381,11 @@
         },
         {
           "internalType": "string",
-          "name": "customFieldsURI",
+          "name": "newTokenURI",
           "type": "string"
         }
       ],
-      "name": "update",
+      "name": "updateMetadata",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
