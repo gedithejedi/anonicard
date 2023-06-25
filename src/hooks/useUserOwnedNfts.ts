@@ -22,7 +22,7 @@ export default <T>(nftName: 'originalAnoni' | 'anonicard') => {
     }
 
     const nfts = await Promise.all(
-      data.TokenBalances.TokenBalance.map(async (token) => {
+      data.TokenBalances.TokenBalance.map(async (token: any) => {
         let metadata
         let url
 

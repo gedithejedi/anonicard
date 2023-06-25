@@ -33,7 +33,7 @@ if (!WORLDCOIN_ID) {
   throw new Error('Wordcoin ID is required!')
 }
 
-const Original: React.FC<Props> = ({ children, title, classes }) => {
+const Original: React.FC = () => {
   const { address } = useAccount()
   const [error, setError] = useState<string | undefined>()
   const { isOpen, onOpen, onClose } = useDisclosure()
