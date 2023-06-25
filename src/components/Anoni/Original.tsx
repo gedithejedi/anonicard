@@ -97,6 +97,7 @@ const Original: React.FC<Props> = ({ nfts, loading, airstackFetch }) => {
         <Modal isOpen={isSendOpen} onClose={onSendClose}>
           <div className="py-5">
             <AnoniForm
+              onSuccess={onSendClose}
               defaultNft={{
                 'Wallet Address': address,
                 'Profile Image': nfts[0].profileImage,

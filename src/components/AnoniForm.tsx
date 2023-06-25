@@ -25,6 +25,7 @@ import { useToast } from '@chakra-ui/react'
 import IOriginalNft from '~/types'
 import Button from '~/components/Common/Button'
 import QrScanner from '~/components/Common/QrScanner'
+import Loader from '~/components/Common/Loader'
 
 const STORAGE_API_KEY = process.env.NEXT_PUBLIC_STORAGE_API_KEY
 
@@ -84,14 +85,7 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
     reset,
     formState: { errors },
   } = useForm<IFormValues>({
-    defaultValues: {
-      ...defaultNft,
-      'Profile Image': [
-        new File([defaultNft['Profile Image']], 'profile', {
-          type: defaultNft['Profile Image'].type,
-        }),
-      ],
-    },
+    defaultValues: defaultNft,
   })
 
   const [toAddress, setToAddress] = useState()
@@ -244,6 +238,7 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
       if (!isPrepareError) {
         try {
           write()
+          console.log('Done!')
         } catch {
           console.error(`minting failed with error. Error: ${error}`)
         } finally {
@@ -274,32 +269,37 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
     setToAddress(data)
   }
   return toAddress ? (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex flex-col gap-y-2">
-        <p className="pb-2 text-sm">send to: {toAddress}</p>
-        <p className="pb-2 text-sm">
-          send from: {defaultNft['Wallet Address']}
-        </p>
-        <label className="flex flex-col Label">
-          Profile Image
-          {defaultNft['Profile Image'] && (
-            <p className="border-2 px-2 py-1 bg-gray-50">1 file(s) selected</p>
-          )}
-        </label>
-        <Input label="Full Name" register={register} disabled={true} />
-        <Input label="Discord Handle" register={register} disabled={true} />
-        <Input label="Job" register={register} disabled={true} />
-        <label className="flex flex-col Label">
-          Introduction
-          <textarea {...register('Introduction')} disabled={true} />
-        </label>
-        <Input label="Occassion" register={register} />
-        <Input label="Memo" register={register} />
-        <div className="mt-4 flex flex-col">
-          <Button type="submit">submit</Button>
+    <>
+      {(isMinting || isLoading) && <Loader />}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex flex-col gap-y-2">
+          <p className="pb-2 text-sm">send to: {toAddress}</p>
+          <p className="pb-2 text-sm">
+            send from: {defaultNft['Wallet Address']}
+          </p>
+          <label className="flex flex-col Label">
+            Profile Image
+            {defaultNft['Profile Image'] && (
+              <p className="border-2 px-2 py-1 bg-gray-50">
+                1 file(s) selected
+              </p>
+            )}
+          </label>
+          <Input label="Full Name" register={register} disabled={true} />
+          <Input label="Discord Handle" register={register} disabled={true} />
+          <Input label="Job" register={register} disabled={true} />
+          <label className="flex flex-col Label">
+            Introduction
+            <textarea {...register('Introduction')} disabled={true} />
+          </label>
+          <Input label="Occassion" register={register} />
+          <Input label="Memo" register={register} />
+          <div className="mt-4 flex flex-col">
+            <Button type="submit">submit</Button>
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </>
   ) : (
     <QrScanner onReadQrCode={onReadQrCode} />
   )
