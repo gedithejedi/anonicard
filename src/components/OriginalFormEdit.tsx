@@ -102,10 +102,12 @@ const OriginalFormEdit: React.FC<Props> = ({ onSuccess, oldData }) => {
       throw new Error('Failed to fetch data')
     }
 
-    const file = new File([await res.blob()], 'nounVatar.jpg', { type: 'image/svg' })
+    const blob = await res.blob()
+    const file = new File([blob], 'nounVatar.jpg', { type: 'image/svg' })
     setValue('Profile Image', [file])
-    const blobtoBase64 = await LitJsSdk.blobToBase64String(file);
-    setBlobImage(blobtoBase64);
+    setDefaultImage(file)
+    const url = window.URL.createObjectURL(blob)
+    setBlobImage(url);
   }
 
 
@@ -258,7 +260,7 @@ const OriginalFormEdit: React.FC<Props> = ({ onSuccess, oldData }) => {
           <label className="flex flex-col">
             ProfileImage
             <div className='flex flex-col'>
-              {defaultImage && <img src={`data:image/jpeg;base64,${blobImage}`} alt='noun image' />}
+              {defaultImage && <img src={blobImage} alt='noun image' />}
               <p className='w-full flex gap-2'>
                 1 file, {defaultImage?.name && defaultImage.name} uploaded
               </p>
