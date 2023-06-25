@@ -128,7 +128,6 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
         ],
       }
 
-      return
       await storeAsset(nft)
     } catch (e) {
       console.error(`Minting failed! ${e}`)
