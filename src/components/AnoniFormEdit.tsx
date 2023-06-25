@@ -21,7 +21,7 @@ import nftConfig from '~/nftConfig.json'
 import Lit from '~/Lit'
 
 import { useToast } from '@chakra-ui/react'
-import { IOriginalNft } from '~/types'
+import { IAnonylNft } from '~/types'
 import Button from '~/components/Common/Button'
 import QrScanner from '~/components/Common/QrScanner'
 import Loader from '~/components/Common/Loader'
@@ -43,6 +43,7 @@ export interface IFormValues {
   Introduction: string
   Occasion: string
   Memo: string
+  tokenId: string
 }
 
 type InputProps = {
@@ -55,7 +56,7 @@ type InputProps = {
 
 // COMPONENT PROP TYPE
 interface Props {
-  defaultNft: IOriginalNft
+  defaultNft: IAnonylNft
   onSuccess: () => void
 }
 
