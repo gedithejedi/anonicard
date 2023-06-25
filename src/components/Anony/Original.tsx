@@ -47,6 +47,8 @@ const Original: React.FC = () => {
     airstackFetch()
   }, [])
 
+  console.log("reloads");
+
   const handleProof = async (result: ISuccessResult) => {
     const reqBody = {
       merkle_root: result.merkle_root,
@@ -77,7 +79,7 @@ const Original: React.FC = () => {
     })
   }
 
-  const onSuccess = (result: ISuccessResult) => {
+  const onSuccess = () => {
     setError(undefined)
     onOpen()
   }
@@ -124,7 +126,7 @@ const Original: React.FC = () => {
             <div className='flex justify-end mt-3'>
               <button
                 className="font-bold bg-black text-white transition-shadow duration-300 py-2 px-4 border-2 border-black hover:text-black hover:bg-white"
-                onClick={() => onOpen()}
+                onClick={() => onSuccess()}
               >
                 Edit AnoniCard
               </button>

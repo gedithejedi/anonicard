@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useState, useEffect } from 'react'
 import {
   Path,
@@ -7,11 +7,9 @@ import {
   SubmitHandler,
   FieldError,
 } from 'react-hook-form'
-import { useRouter } from 'next/navigation'
 
 import {
   useContractRead,
-  useAccount,
   usePrepareContractWrite,
   useContractWrite,
   useWaitForTransaction,
@@ -38,9 +36,9 @@ const nftDescription =
 // FORM TYPES
 interface IFormValues {
   // TODO: Image should have size limit (else converting blob to string will fail)
-  'Profile Image': File[]
-  'Full Name': string
-  'Discord Handle': string
+  'ProfileImage': File[]
+  'FullName': string
+  'DiscordHandle': string
   Job: number
   Introduction: string
 }
@@ -78,7 +76,6 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
     reset,
     formState: { errors },
   } = useForm<IFormValues>()
-  const router = useRouter()
   const toast = useToast()
 
   const [uri, setUri] = useState<string | undefined>()
@@ -100,6 +97,10 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
   const onSubmit: SubmitHandler<IFormValues> = async (data) => {
     setIsMinting(true)
     try {
+      const dataWithDiscordId = {
+        ...data,
+        DiscordHandle: discordName || ""
+      }
       await storeAsset(data)
     } catch (e) {
       console.error(`Minting failed! ${e}`)
@@ -139,7 +140,28 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
     hash: data?.hash,
   })
 
-  async function storeAsset(formData: IFormValues) {
+
+  // const {
+  //   config,
+  //   error: prepareError,
+  //   isError: isPrepareError,
+  // } = usePrepareContractWrite({
+  //   address: nftConfig.originalAnoni.address as `0x${string}`,
+  //   abi: OriginalAnoni.abi,
+  //   functionName: 'mint',
+  //   args: [uri],
+  //   chainId: polygon.id,
+  //   enabled: Boolean(uri),
+  // })
+
+  // const { data, error, isError, write } = useContractWrite(config)
+
+  // const { isLoading, isSuccess } = useWaitForTransaction({
+  //   hash: data?.hash,
+  // })
+
+
+  async function storeAsset(formData: IFormValues, defaultTokenId?: string) {
     if (!STORAGE_API_KEY) {
       console.error('Required API Key has not been provided.')
       throw Error('This method cannot be executed.')
@@ -150,22 +172,24 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
     })
 
     const { data: nftTotalSupply } = await refetch()
+    const tokenId = defaultTokenId ?? String(Number(nftTotalSupply) + 1)
+
     const encryptedInformation = await Lit.encryptObject(
       nftName,
       {
-        fullName: formData['Full Name'],
-        discordName: formData['Discord Handle'],
+        fullName: formData['FullName'],
+        discordName: formData['DiscordHandle'],
         job: formData['Job'],
         introduction: formData['Introduction'],
       },
-      String(Number(nftTotalSupply) + 1)
+      tokenId
     )
 
     const { encryptedFile, encryptedSymmetricKey: encryptedFileSymmetricKey } =
       await Lit.encryptFile(
         nftName,
-        formData['Profile Image']?.[0],
-        String(Number(nftTotalSupply) + 1)
+        formData['ProfileImage']?.[0],
+        tokenId
       )
 
     // TODO: Encrypt image once we get getting NFT part done.
@@ -218,16 +242,33 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
     loadDefaultImage()
   }, [])
 
-  window &&
-    window.addEventListener('storage', () => {
-      const localStorageName = localStorage.getItem('discordName')
-      console.log(localStorageName)
-      if (localStorageName == null) {
-        return
-      }
+  const getDiscordHandleFromLocalStorage = () => {
+    const localStorageName = localStorage.getItem('discordName')
+    console.log(localStorageName)
+    if (localStorageName == null) {
+      return
+    }
+    console.log("in the memo");
+    setDiscordName(localStorageName)
+  }
 
-      setDiscordName(localStorageName)
+  React.useEffect(() => {
+    window.addEventListener('storage', getDiscordHandleFromLocalStorage);
+
+    return () => {
+      window.removeEventListener('storage', getDiscordHandleFromLocalStorage);
+    };
+  }, []);
+
+
+  useMemo(() => {
+    useForm({
+      defaultValues: {
+        FullName: '',
+        DiscordHandle: ''
+      }
     })
+  }, [oldData])
 
   return (
     <>
@@ -235,33 +276,33 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-y-2">
           <label className="flex flex-col">
-            Profile Image
+            ProfileImage
             <input
               type="file"
               className="bg-white"
               accept="image/png, image/jpeg, image/jpg"
-              {...register('Profile Image', { required: true })}
+              {...register('ProfileImage', { required: true })}
             />
-            {errors['Profile Image'] && (
+            {errors['ProfileImage'] && (
               <span className="SubText text-red-500">
                 This field is required
               </span>
             )}
           </label>
           <Input
-            label="Full Name"
+            label="FullName"
             register={register}
-            error={errors['Full Name']}
+            error={errors['FullName']}
             required
           />
           {discordName !== '' ? (
             <div className="relative">
               <label className="flex flex-col">
-                Discord Handle
+                DiscordHandle
                 <input
                   disabled={true}
                   value={discordName}
-                  {...(register('Discord Handle'), { required: true })}
+                  {...(register('DiscordHandle'), { required: true })}
                 />
                 <a
                   target="_blank"
@@ -290,7 +331,7 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
             </div>
           ) : (
             <>
-              <label>{'Discord Handle'}</label>
+              <label>{'DiscordHandle'}</label>
               <a
                 className="bg-discord text-white text-l max-w-[220px] py-2 rounded-md font-bold flex justify-center items-center space-x-4 hover:bg-gray-600 transition duration-75"
                 target="_blank"
@@ -304,7 +345,7 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
               </a>
             </>
           )}
-          {errors['Discord Handle'] && (
+          {errors['DiscordHandle'] && (
             <span className="SubText text-red-500">This field is required</span>
           )}
           <Input
