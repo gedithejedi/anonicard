@@ -10,10 +10,8 @@ contract AnoniCard is ERC721URIStorage {
     Counters.Counter private _tokenIds;
 
     struct TokenMetadata {
-        string cardInfo;
-        string cardInfoDecryption;
-        string customFields;
-        string customFieldsDecryption;
+        string cardInfoURI;
+        string customFieldsURI;
     }
 
     mapping(uint256 => TokenMetadata) private _tokenMetadata;
@@ -21,10 +19,8 @@ contract AnoniCard is ERC721URIStorage {
     constructor() ERC721("AnoniCard", "ANONICARD") {}
 
     function mint(
-        string memory cardInfo,
-        string memory cardInfoDecryption,
-        string memory customFields,
-        string memory customFieldsDecryption
+        string memory cardInfoURI,
+        string memory customFieldsURI
     ) public returns (uint256) {
         _tokenIds.increment();
 
@@ -32,41 +28,17 @@ contract AnoniCard is ERC721URIStorage {
         _mint(msg.sender, newItemId);
 
         _tokenMetadata[newItemId] = TokenMetadata(
-            cardInfo,
-            cardInfoDecryption,
-            customFields,
-            customFieldsDecryption
+            cardInfoURI,
+            customFieldsURI
         );
 
         return newItemId;
     }
 
-    function updateCustomFields(uint256 tokenId, string memory newCustomFields) public {
+    function update(uint256 tokenId, string memory customFieldsURI) public {
         require(ownerOf(tokenId) == msg.sender, "ERC721: caller is not the owner");
 
-        _tokenMetadata[tokenId].customFields = newCustomFields;
-    }
-
-    function updateCustomFieldsDecryption(uint256 tokenId, string memory newCustomFieldsDecryption) public {
-        require(ownerOf(tokenId) == msg.sender, "ERC721: caller is not the owner");
-
-        _tokenMetadata[tokenId].customFieldsDecryption = newCustomFieldsDecryption;
-    }
-
-    function getCardInfo(uint256 tokenId) public view returns (string memory) {
-        return _tokenMetadata[tokenId].cardInfo;
-    }
-
-    function getCardInfoDecryption(uint256 tokenId) public view returns (string memory) {
-        return _tokenMetadata[tokenId].cardInfoDecryption;
-    }
-
-    function getCustomFields(uint256 tokenId) public view returns (string memory) {
-        return _tokenMetadata[tokenId].customFields;
-    }
-
-    function getCustomFieldsDecryption(uint256 tokenId) public view returns (string memory) {
-        return _tokenMetadata[tokenId].customFieldsDecryption;
+        _tokenMetadata[tokenId].customFieldsURI = customFieldsURI;
     }
 
     function totalSupply() public view returns (uint256) {
