@@ -26,6 +26,7 @@ import Lit from '~/Lit'
 import { useToast } from '@chakra-ui/react'
 import Button from '~/components/Common/Button'
 import Loader from '~/components/Common/Loader'
+import { OriginalNFT } from './Anony/Original'
 
 const STORAGE_API_KEY = process.env.NEXT_PUBLIC_STORAGE_API_KEY
 
@@ -67,9 +68,10 @@ const Input = ({ label, register, required = false, error }: InputProps) => (
 // COMPONENT PROP TYPE
 interface Props {
   onSuccess: () => void
+  oldData: OriginalNFT
 }
 
-const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
+const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
   const {
     register,
     handleSubmit,

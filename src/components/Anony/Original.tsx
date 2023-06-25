@@ -14,7 +14,7 @@ import OriginalForm from '~/components/OriginalForm'
 import Modal from '~/components/Common/Modal'
 import useUserOwnedNfts from '~/hooks/useUserOwnedNfts'
 
-interface OriginalNFT {
+export interface OriginalNFT {
   tokenId: string
   profileImage?: string
   fullName: string
@@ -92,7 +92,7 @@ const Original: React.FC = () => {
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
         <div className="py-5">
-          <OriginalForm onSuccess={onFormSucess} />
+          <OriginalForm onSuccess={onFormSucess} oldData={nfts[0]} />
         </div>
       </Modal>
       <Box classes="bg-beige" title="My Anoni">
@@ -122,6 +122,14 @@ const Original: React.FC = () => {
                 </tr>
               </tbody>
             </table>
+            <div className='flex justify-end mt-3'>
+              <button
+                className="font-bold bg-black text-white transition-shadow duration-300 py-2 px-4 border-2 border-black hover:text-black hover:bg-white"
+                onClick={() => onOpen()}
+              >
+                Edit AnoniCard
+              </button>
+            </div>
           </>
         ) : (
           <>
