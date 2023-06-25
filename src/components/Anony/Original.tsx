@@ -33,19 +33,19 @@ if (!WORLDCOIN_ID) {
   throw new Error('Wordcoin ID is required!')
 }
 
-const Original: React.FC<Props> = ({ children, title, classes }) => {
+const Original: React.FC = () => {
   const { address } = useAccount()
   const [error, setError] = useState<string | undefined>()
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const {
-    nfts: originalNFTs,
-    isLoadingNFTs,
-    getUserOwnedNfts,
+    airstackFetch,
+    nfts,
+    loading
   } = useUserOwnedNfts<OriginalNFT>('originalAnoni')
 
   useEffect(() => {
-    getUserOwnedNfts()
+    airstackFetch()
   }, [])
 
   const handleProof = async (result: ISuccessResult) => {
@@ -85,7 +85,7 @@ const Original: React.FC<Props> = ({ children, title, classes }) => {
 
   const onFormSucess = () => {
     onClose()
-    getUserOwnedNfts()
+    airstackFetch()
   }
 
   return (
@@ -96,29 +96,29 @@ const Original: React.FC<Props> = ({ children, title, classes }) => {
         </div>
       </Modal>
       <Box classes="bg-beige" title="My Anoni">
-        {isLoadingNFTs ? (
+        {loading ? (
           'Loading ... '
-        ) : originalNFTs.length ? (
+        ) : nfts.length ? (
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={originalNFTs[0].profileImage} alt="profile" />
+            <img src={nfts[0].profileImage} alt="profile" />
             <table>
               <tbody className="divide-y-2 divide-solid div-">
                 <tr>
                   <th>Full Name</th>
-                  <td>{originalNFTs[0].fullName}</td>
+                  <td>{nfts[0].fullName}</td>
                 </tr>
                 <tr>
                   <th>Discord Name</th>
-                  <td>{originalNFTs[0].discordName}</td>
+                  <td>{nfts[0].discordName}</td>
                 </tr>
                 <tr>
                   <th>Job</th>
-                  <td>{originalNFTs[0].job}</td>
+                  <td>{nfts[0].job}</td>
                 </tr>
                 <tr>
                   <th>Introduction</th>
-                  <td>{originalNFTs[0].introduction}</td>
+                  <td>{nfts[0].introduction}</td>
                 </tr>
               </tbody>
             </table>

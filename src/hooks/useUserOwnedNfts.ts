@@ -1,72 +1,81 @@
 import { useState, useEffect } from 'react'
 
+import { useLazyQuery } from "@airstack/airstack-react";
 import alchemy from '~/alchemy'
 import { useAccount } from 'wagmi'
 
 import nftConfig from '~/nftConfig.json'
 import Lit from '~/Lit'
+import { query } from '~/util/query'
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default <T>(nftName: 'originalAnoni' | 'anonicard') => {
   const [nfts, setNFTs] = useState<T[]>([])
-  const [isLoadingNFTs, setIsLoadingNFTs] = useState(false)
-  const { address } = useAccount()
+  // const [isLoadingNFTs, setIsLoadingNFTs] = useState(false)
+  const { address } = useAccount();
 
-  const getUserOwnedNfts = async () => {
-    if (!address) {
+  const [airstackFetch, { data, loading, error: airstackErr }] = useLazyQuery(query, {});
+
+  const getDecryptedValue = async () => {
+    if (!data?.TokenBalances?.TokenBalance) {
       return
     }
 
-    setIsLoadingNFTs(true)
+    const nfts = await Promise.all(
+      data.TokenBalances.TokenBalance.map(async (token: any) => {
+        let metadata
+        let url
 
-    const response = await alchemy.nft.getNftsForOwner(address, {
-      contractAddresses: [nftConfig[nftName].address],
-    })
+        const ipfsURI = token.tokenNfts.tokenURI.replace('ipfs://', 'https://ipfs.io/ipfs/')
+        const res = await fetch(ipfsURI)
+        const encryptedMetadata = await res.json()
 
-    if (response) {
-      const nfts = await Promise.all(
-        response.ownedNfts.map(async (nft) => {
-          let metadata
-          let url
+        if (
+          encryptedMetadata?.encryptedString &&
+          encryptedMetadata?.encryptedStringSymmetricKey
+        ) {
+          metadata = await Lit.decryptText(
+            'originalAnoni',
+            encryptedMetadata.encryptedString,
+            encryptedMetadata.encryptedStringSymmetricKey,
+            token.tokenNfts.tokenId
+          )
+        }
 
-          if (
-            nft.rawMetadata?.encryptedString &&
-            nft.rawMetadata?.encryptedStringSymmetricKey
-          ) {
-            metadata = await Lit.decryptText(
-              'originalAnoni',
-              nft.rawMetadata?.encryptedString,
-              nft.rawMetadata?.encryptedStringSymmetricKey,
-              nft.tokenId
-            )
-          }
+        if (
+          encryptedMetadata?.encryptedImage &&
+          encryptedMetadata?.encryptedFileSymmetricKey
+        ) {
+          const profileImage = await Lit.decryptFile(
+            'originalAnoni',
+            encryptedMetadata?.encryptedImage,
+            encryptedMetadata?.encryptedFileSymmetricKey,
+            token.tokenNfts.tokenId
+          )
 
-          if (
-            nft.rawMetadata?.encryptedImage &&
-            nft.rawMetadata?.encryptedFileSymmetricKey
-          ) {
-            const profileImage = await Lit.decryptFile(
-              'originalAnoni',
-              nft.rawMetadata?.encryptedImage,
-              nft.rawMetadata?.encryptedFileSymmetricKey,
-              nft.tokenId
-            )
+          const blob = new Blob([profileImage], { type: 'image/bmp' })
+          url = window.URL.createObjectURL(blob)
+        }
 
-            const blob = new Blob([profileImage], { type: 'image/bmp' })
-            url = window.URL.createObjectURL(blob)
-          }
-
-          return {
-            ...metadata,
-            profileImage: url,
-            tokenId: nft.tokenId,
-          }
-        })
-      )
-      setNFTs(nfts)
-      setIsLoadingNFTs(false)
-    }
+        return {
+          ...metadata,
+          profileImage: url,
+          tokenId: token.tokenNfts.tokenId,
+        }
+      })
+    )
+    setNFTs(nfts)
   }
 
-  return { nfts, isLoadingNFTs, getUserOwnedNfts }
+  useEffect(() => {
+    if (!address || !data) {
+      return
+    }
+
+    getDecryptedValue()
+
+  }, [data])
+
+
+  return { airstackFetch, nfts, loading }
 }

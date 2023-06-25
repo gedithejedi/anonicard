@@ -28,7 +28,7 @@ export default function handler(
     }
   ).then(async (verifyRes) => {
     const wldResponse = await verifyRes.json()
-    console.log(wldResponse.code)
+
     if (verifyRes.status == 200) {
       res.status(200).send({ code: wldResponse.code })
     } else {

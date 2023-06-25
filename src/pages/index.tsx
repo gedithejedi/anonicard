@@ -1,5 +1,3 @@
-import { useState, useEffect, useCallback } from 'react'
-
 import Original from '~/components/Anony/Original'
 
 export default function Home() {
