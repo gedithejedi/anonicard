@@ -25,6 +25,7 @@ import { useToast } from '@chakra-ui/react'
 import Button from '~/components/Common/Button'
 import Loader from '~/components/Common/Loader'
 import { OriginalNFT } from './Anony/Original'
+import { fetchARandomNoun } from '~/util/generateNoun'
 
 const STORAGE_API_KEY = process.env.NEXT_PUBLIC_STORAGE_API_KEY
 
@@ -266,6 +267,8 @@ const OriginalForm: React.FC<Props> = ({ onSuccess, oldData }) => {
       window.removeEventListener('storage', getDiscordHandleFromLocalStorage);
     };
   }, []);
+
+  console.log(fetchARandomNoun());
 
   return (
     <>
