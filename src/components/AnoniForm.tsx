@@ -84,7 +84,14 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
     reset,
     formState: { errors },
   } = useForm<IFormValues>({
-    defaultValues: defaultNft,
+    defaultValues: {
+      ...defaultNft,
+      'Profile Image': [
+        new File([defaultNft['Profile Image']], 'profile', {
+          type: defaultNft['Profile Image'].type,
+        }),
+      ],
+    },
   })
 
   const [toAddress, setToAddress] = useState()
@@ -114,8 +121,14 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
       const nft = {
         ...data,
         ...defaultNft,
-        'Profile Image': data['Profile Image'],
+        'Profile Image': [
+          new File([defaultNft['Profile Image']], 'profile', {
+            type: defaultNft['Profile Image'].type,
+          }),
+        ],
       }
+
+      return
       await storeAsset(nft)
     } catch (e) {
       console.error(`Minting failed! ${e}`)
@@ -268,16 +281,11 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
         <p className="pb-2 text-sm">
           send from: {defaultNft['Wallet Address']}
         </p>
-
-        {/* TODO: add back disabled */}
-        <label className="flex flex-col">
+        <label className="flex flex-col Label">
           Profile Image
-          <input
-            type="file"
-            className="bg-white"
-            accept="image/png, image/jpeg, image/jpg"
-            {...register('Profile Image')}
-          />
+          {defaultNft['Profile Image'] && (
+            <p className="border-2 px-2 py-1 bg-gray-50">1 file(s) selected</p>
+          )}
         </label>
         <Input label="Full Name" register={register} disabled={true} />
         <Input label="Discord Handle" register={register} disabled={true} />

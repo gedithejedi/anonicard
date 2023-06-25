@@ -28,6 +28,7 @@ export default <T>(nftName: 'originalAnoni' | 'anonicard') => {
       data.TokenBalances.TokenBalance.map(async (token: any) => {
         let metadata
         let url
+        let blob
 
         const ipfsURI = token.tokenNfts.tokenURI.replace(
           'ipfs://',
@@ -59,13 +60,14 @@ export default <T>(nftName: 'originalAnoni' | 'anonicard') => {
             token.tokenNfts.tokenId
           )
 
-          const blob = new Blob([profileImage], { type: 'image/bmp' })
+          blob = new Blob([profileImage], { type: 'image/bmp' })
           url = window.URL.createObjectURL(blob)
         }
 
         return {
           ...metadata,
-          profileImage: url,
+          profileImage: blob,
+          profileImageUrl: url,
           tokenId: token.tokenNfts.tokenId,
         }
       })

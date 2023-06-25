@@ -16,7 +16,8 @@ import AnoniForm from '~/components/AnoniForm'
 
 interface OriginalNFT {
   tokenId: string
-  profileImage?: string
+  profileImage?: Blob
+  profileImageUrl?: string
   fullName: string
   discordName: string
   job: number
@@ -119,7 +120,7 @@ const Original: React.FC<Props> = ({ nfts, loading, airstackFetch }) => {
         ) : nfts.length ? (
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={nfts[0].profileImage} alt="profile" />
+            <img src={nfts[0].profileImageUrl} alt="profile" />
             <table>
               <tbody className="divide-y-2 divide-solid div-">
                 <tr>
