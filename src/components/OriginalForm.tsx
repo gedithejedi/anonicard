@@ -7,7 +7,6 @@ import {
   SubmitHandler,
   FieldError,
 } from 'react-hook-form'
-import { useRouter } from 'next/navigation'
 
 import {
   useContractRead,
@@ -76,7 +75,6 @@ const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
     reset,
     formState: { errors },
   } = useForm<IFormValues>()
-  const router = useRouter()
   const toast = useToast()
 
   const [uri, setUri] = useState<string | undefined>()
