@@ -19,13 +19,14 @@ contract AnoniCard is ERC721URIStorage {
     constructor() ERC721("AnoniCard", "ANONICARD") {}
 
     function mint(
+        address receiver,
         string memory cardInfoURI,
         string memory customFieldsURI
     ) public returns (uint256) {
         _tokenIds.increment();
 
         uint256 newItemId = _tokenIds.current();
-        _mint(msg.sender, newItemId);
+        _mint(receiver, newItemId);
 
         _tokenMetadata[newItemId] = TokenMetadata(
             cardInfoURI,
