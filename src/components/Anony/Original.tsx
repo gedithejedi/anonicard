@@ -9,7 +9,7 @@ import type { ISuccessResult } from '@worldcoin/idkit'
 
 import Box from '~/components/Common/Box'
 import Button from '~/components/Common/Button'
-import OriginalForm from '~/components/OriginalForm'
+import OriginalFormMint from '~/components/OriginalFormMint'
 import Modal from '~/components/Common/Modal'
 import useUserOwnedNfts from '~/hooks/useUserOwnedNfts'
 
@@ -91,7 +91,7 @@ const Original: React.FC = () => {
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
         <div className="py-5">
-          <OriginalForm onSuccess={onFormSucess} oldData={nfts[0]} />
+          <OriginalFormMint onSuccess={onFormSucess} oldData={nfts[0]} />
         </div>
       </Modal>
       <Box classes="bg-beige" title="My Anoni">
