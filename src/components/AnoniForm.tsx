@@ -227,6 +227,37 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
     setUris([cardInfoMetadata.url, customFieldsMetadata.url])
   }
 
+  useEffect(() => {
+    if (uris && write) {
+      if (!isPrepareError) {
+        try {
+          write()
+        } catch {
+          console.error(`minting failed with error. Error: ${error}`)
+        } finally {
+          setUris(undefined)
+          setIsMinting(false)
+        }
+      } else {
+        console.error(`NFT cannot be minted ${prepareError}`)
+      }
+    }
+  }, [uris, write, data])
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast({
+        title: 'Anonicard minted.',
+        description: 'Your Anonicard has been successfully minted!',
+        status: 'success',
+        duration: 6000,
+        isClosable: true,
+      })
+      onSuccess()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccess])
+
   const onReadQrCode = (data) => {
     setToAddress(data)
   }
