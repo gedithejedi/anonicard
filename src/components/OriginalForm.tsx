@@ -100,8 +100,8 @@ const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
     } catch (e) {
       console.error(`Minting failed! ${e}`)
       toast({
-        title: 'Anonycard minting failed.',
-        description: `Your Anonycard could not be minted! ${e}`,
+        title: 'Anonicard minting failed.',
+        description: `Your Anonicard could not be minted! ${e}`,
         status: 'error',
         duration: 6000,
         isClosable: true,
@@ -199,8 +199,8 @@ const OriginalForm: React.FC<Props> = ({ onSuccess }) => {
   useEffect(() => {
     if (isSuccess) {
       toast({
-        title: 'Anonycard minted.',
-        description: 'Your Anonycard has been successfully minted!',
+        title: 'Anonicard minted.',
+        description: 'Your Anonicard has been successfully minted!',
         status: 'success',
         duration: 6000,
         isClosable: true,

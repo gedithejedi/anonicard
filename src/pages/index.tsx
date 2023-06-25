@@ -16,7 +16,7 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center gap-y-8 p-4">
       <Original nfts={nfts} loading={loading} airstackFetch={airstackFetch} />
       <Box classes="bg-beige" title="My Wallet">
-        Show Anonycard List
+        Show Anonicard List
       </Box>
     </main>
   )

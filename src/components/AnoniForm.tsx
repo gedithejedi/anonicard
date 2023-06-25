@@ -114,8 +114,8 @@ const AnoniForm: React.FC<Props> = ({ defaultNft, onSuccess }) => {
     } catch (e) {
       console.error(`Minting failed! ${e}`)
       toast({
-        title: 'Anonycard minting failed.',
-        description: `Your Anonycard could not be minted! ${e}`,
+        title: 'Anonicard minting failed.',
+        description: `Your Anonicard could not be minted! ${e}`,
         status: 'error',
         duration: 6000,
         isClosable: true,
