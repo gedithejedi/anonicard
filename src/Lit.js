@@ -83,12 +83,15 @@ class Lit {
       authSig,
     })
 
-    const decryptString = await LitJsSdk.decryptString(
-      LitJsSdk.base64StringToBlob(encryptedString),
-      symmetricKey
-    )
-
-    return JSON.parse(decryptString)
+    try {
+      const decryptString = await LitJsSdk.decryptString(
+        LitJsSdk?.base64StringToBlob(encryptedString),
+        symmetricKey
+      )
+      return JSON.parse(decryptString)
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   async encryptFile(contractName, fileToEncrypt, nftTotalSupply) {
